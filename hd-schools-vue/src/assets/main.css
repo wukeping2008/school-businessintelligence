@@ -951,6 +951,39 @@ body {
 }
 
 /* 响应式设计 */
+/* 平板设备 */
+@media (max-width: 1024px) {
+    .header-content {
+        padding: 0 15px;
+        gap: 15px;
+    }
+    
+    .nav-menu {
+        gap: 20px;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+    }
+    
+    .academic-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .guidance-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .communication-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
+
+/* 手机设备 */
 @media (max-width: 768px) {
     .header-content {
         flex-direction: column;
@@ -959,24 +992,64 @@ body {
         gap: 15px;
     }
     
+    .logo {
+        min-width: auto;
+        font-size: 18px;
+    }
+    
+    .logo i {
+        font-size: 28px;
+    }
+    
     .nav-menu {
         flex-wrap: wrap;
         justify-content: center;
-        gap: 15px;
+        gap: 10px;
+        width: 100%;
     }
     
     .nav-item {
-        padding: 8px 15px;
+        padding: 8px 12px;
         font-size: 14px;
+        min-width: auto;
+    }
+    
+    .header-actions {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+        align-items: center;
+    }
+    
+    .campus-selector,
+    .language-toggle {
+        width: 100%;
+        max-width: 200px;
     }
     
     .dashboard-grid {
         grid-template-columns: 1fr;
+        gap: 20px;
     }
     
     .dashboard-card {
         flex-direction: column;
         text-align: center;
+        padding: 25px 20px;
+    }
+    
+    .card-icon {
+        width: 56px;
+        height: 56px;
+        font-size: 24px;
+    }
+    
+    .card-content h3 {
+        font-size: 20px;
+    }
+    
+    .stat-number {
+        font-size: 24px;
     }
     
     .communication-container {
@@ -995,8 +1068,272 @@ body {
         font-size: 28px;
     }
     
+    .page-header p {
+        font-size: 16px;
+    }
+    
     .main-content {
         padding: 20px 15px;
+    }
+    
+    /* 图表容器移动端优化 */
+    .chart-container {
+        height: 250px;
+        margin-bottom: 20px;
+    }
+    
+    /* 表单元素移动端优化 */
+    .questionnaire-section,
+    .record-section,
+    .timeline-section,
+    .academic-card,
+    .pathway-visualization,
+    .progress-dashboard,
+    .milestone-tracker,
+    .resource-recommendations {
+        padding: 20px 15px;
+        margin-bottom: 20px;
+    }
+    
+    /* 按钮移动端优化 */
+    .navigation-buttons {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+        padding: 12px 20px;
+    }
+    
+    /* 时间线移动端优化 */
+    .timeline-item {
+        flex-direction: column;
+        gap: 10px;
+        padding: 15px;
+    }
+    
+    .timeline-avatar {
+        width: 40px;
+        height: 40px;
+        align-self: flex-start;
+    }
+    
+    .timeline-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    
+    /* 进度项移动端优化 */
+    .progress-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    
+    /* 里程碑项移动端优化 */
+    .milestone-item {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 10px;
+    }
+}
+
+/* 小屏手机设备 */
+@media (max-width: 480px) {
+    .header-content {
+        padding: 10px;
+    }
+    
+    .logo {
+        font-size: 16px;
+    }
+    
+    .logo i {
+        font-size: 24px;
+    }
+    
+    .nav-item {
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+    
+    .main-content {
+        padding: 15px 10px;
+    }
+    
+    .page-header h1 {
+        font-size: 24px;
+    }
+    
+    .page-header p {
+        font-size: 14px;
+    }
+    
+    .dashboard-card {
+        padding: 20px 15px;
+    }
+    
+    .card-content h3 {
+        font-size: 18px;
+    }
+    
+    .stat-number {
+        font-size: 20px;
+    }
+    
+    .chart-container {
+        height: 200px;
+    }
+    
+    .questionnaire-section,
+    .record-section,
+    .timeline-section,
+    .academic-card,
+    .pathway-visualization,
+    .progress-dashboard,
+    .milestone-tracker,
+    .resource-recommendations {
+        padding: 15px 10px;
+    }
+    
+    .question h3 {
+        font-size: 20px;
+    }
+    
+    .option {
+        padding: 12px 15px;
+    }
+    
+    .text-input {
+        padding: 12px;
+        font-size: 14px;
+    }
+}
+
+/* Element Plus 移动端响应式优化 */
+@media (max-width: 768px) {
+    .el-row {
+        margin: 0 !important;
+    }
+    
+    .el-col {
+        padding: 0 10px !important;
+    }
+    
+    .el-card {
+        margin-bottom: 15px !important;
+    }
+    
+    .el-card__body {
+        padding: 15px !important;
+    }
+    
+    .el-button {
+        width: 100% !important;
+        margin-bottom: 10px !important;
+    }
+    
+    .el-select {
+        width: 100% !important;
+    }
+    
+    .el-input {
+        width: 100% !important;
+    }
+    
+    .el-form-item {
+        margin-bottom: 15px !important;
+    }
+    
+    .el-form-item__label {
+        padding: 0 !important;
+        margin-bottom: 5px !important;
+        line-height: 1.4 !important;
+    }
+    
+    .el-table {
+        font-size: 12px !important;
+    }
+    
+    .el-table th,
+    .el-table td {
+        padding: 8px 5px !important;
+    }
+    
+    /* ECharts 图表移动端优化 */
+    .echarts-container {
+        width: 100% !important;
+        height: 250px !important;
+        min-height: 200px !important;
+    }
+    
+    /* 确保图表文字在移动端可读 */
+    .echarts-container canvas {
+        max-width: 100% !important;
+        height: auto !important;
+    }
+}
+
+/* 横屏模式优化 */
+@media (max-width: 768px) and (orientation: landscape) {
+    .header-content {
+        flex-direction: row;
+        height: 60px;
+        padding: 0 15px;
+    }
+    
+    .nav-menu {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        gap: 15px;
+    }
+    
+    .header-actions {
+        flex-direction: row;
+        gap: 15px;
+    }
+    
+    .chart-container {
+        height: 300px;
+    }
+}
+
+/* 触摸设备优化 */
+@media (hover: none) and (pointer: coarse) {
+    .nav-item,
+    .dashboard-card,
+    .btn,
+    .option,
+    .timeline-item {
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+    }
+    
+    .nav-item:active,
+    .dashboard-card:active,
+    .btn:active {
+        transform: scale(0.98);
+    }
+    
+    /* 增大触摸目标 */
+    .nav-item {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .btn {
+        min-height: 44px;
+    }
+    
+    .option {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
     }
 }
 
