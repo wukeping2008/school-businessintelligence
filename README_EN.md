@@ -7,7 +7,7 @@
 **An intelligent education management platform designed specifically for international schools**
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Online-success?style=flat-square)](http://inspire.long-arena.com/schoolbiportal)
-[![Tech Stack](https://img.shields.io/badge/Tech%20Stack-HTML5%20|%20CSS3%20|%20JavaScript-orange?style=flat-square)](#tech-stack)
+[![Tech Stack](https://img.shields.io/badge/Tech%20Stack-Vue3%20|%20TypeScript%20|%20Vite-orange?style=flat-square)](#tech-stack)
 [![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](#license)
 
 [Features](#-features) • [Quick Start](#-quick-start) • [Tech Stack](#-tech-stack) • [Project Structure](#-project-structure) • [Deployment](#-deployment) • [Contributing](#-contributing)
@@ -105,6 +105,17 @@ For a quick look, you can directly open the `index.html` file in your browser.
 ## 🛠 Tech Stack
 
 ### Frontend Technologies
+| Technology | Version | Description |
+|------------|---------|-------------|
+| **Vue 3** | 3.4+ | Progressive JavaScript framework with Composition API |
+| **TypeScript** | 5.x | Type-safe JavaScript development |
+| **Vite** | 5.x | Fast build tool and development server |
+| **Element Plus** | 2.x | Vue 3 UI component library |
+| **ECharts** | 5.x | Complex visualization, 3D charts, relationship graphs |
+| **Pinia** | 2.x | Vue state management library |
+| **Vue Router** | 4.x | Official router for Vue.js |
+
+### Legacy Version (v1.x)
 | Technology | Version | Description |
 |------------|---------|-------------|
 | **HTML5** | - | Semantic tags, modern web standards |
