@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>国际学校商业智能门户</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 顶部导航 -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span data-i18n="nav.logo">智慧校园门户</span>
+                </div>
+                <nav class="nav-menu">
+                    <a href="#" class="nav-item active" data-page="dashboard">
+                        <i class="fas fa-home"></i>
+                        <span data-i18n="nav.home">首页</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="admission">
+                        <i class="fas fa-user-plus"></i>
+                        <span data-i18n="nav.admission">招生咨询</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="communication">
+                        <i class="fas fa-comments"></i>
+                        <span data-i18n="nav.communication">家校沟通</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="academic">
+                        <i class="fas fa-chart-line"></i>
+                        <span data-i18n="nav.academic">学业反馈</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="guidance">
+                        <i class="fas fa-route"></i>
+                        <span data-i18n="nav.guidance">升学指导</span>
+                    </a>
+                </nav>
+                <div class="user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span data-i18n="nav.admin">管理员</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- 主要内容区域 -->
+        <main class="main-content">
+            <!-- 首页仪表板 -->
+            <div id="dashboard" class="page active">
+                <div class="page-header">
+                    <h1 data-i18n="home.title">智慧校园数据概览</h1>
+                    <p data-i18n="home.subtitle">全方位了解学校运营状况</p>
+                </div>
+                
+                <div class="dashboard-grid">
+                    <div class="dashboard-card" onclick="navigateToPage('admission')">
+                        <div class="card-icon admission">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3 data-i18n="home.admission.title">招生咨询</h3>
+                            <p data-i18n="home.admission.desc">智能化招生流程，个性化学业规划</p>
+                            <div class="card-stats">
+                                <span class="stat-number">156</span>
+                                <span class="stat-label" data-i18n="home.admission.count">本月咨询</span>
+                            </div>
+                        </div>
+                        <div class="card-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card" onclick="navigateToPage('communication')">
+                        <div class="card-icon communication">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3 data-i18n="home.communication.title">家校沟通</h3>
+                            <p data-i18n="home.communication.desc">记录温馨瞬间，加强家校联系</p>
+                            <div class="card-stats">
+                                <span class="stat-number">342</span>
+                                <span class="stat-label" data-i18n="home.communication.count">互动记录</span>
+                            </div>
+                        </div>
+                        <div class="card-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card" onclick="navigateToPage('academic')">
+                        <div class="card-icon academic">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3 data-i18n="home.academic.title">学业反馈</h3>
+                            <p data-i18n="home.academic.desc">数据驱动的学业分析与发展报告</p>
+                            <div class="card-stats">
+                                <span class="stat-number">89%</span>
+                                <span class="stat-label" data-i18n="home.academic.count">学业报告</span>
+                            </div>
+                        </div>
+                        <div class="card-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card" onclick="navigateToPage('guidance')">
+                        <div class="card-icon guidance">
+                            <i class="fas fa-route"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3 data-i18n="home.guidance.title">升学指导</h3>
+                            <p data-i18n="home.guidance.desc">可视化升学路径，智能目标调整</p>
+                            <div class="card-stats">
+                                <span class="stat-number">95%</span>
+                                <span class="stat-label" data-i18n="home.guidance.count">升学规划</span>
+                            </div>
+                        </div>
+                        <div class="card-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="overview-charts">
+                    <div class="chart-container">
+                        <h3 data-i18n="home.overview.title">月度数据趋势</h3>
+                        <canvas id="overviewChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 招生咨询页面 -->
+            <div id="admission" class="page">
+                <div class="page-header">
+                    <h1 data-i18n="admission.title">智能招生咨询系统</h1>
+                    <p data-i18n="admission.subtitle">通过互动问答，生成个性化学业规划报告</p>
+                </div>
+                
+                <div class="admission-container">
+                    <div class="questionnaire-section">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                            <span class="progress-text" id="progressText" data-i18n="admission.progress.step">第 1 步，共 5 步</span>
+                        </div>
+                        
+                        <div class="question-container" id="questionContainer">
+                            <!-- 问题内容将通过JavaScript动态生成 -->
+                        </div>
+                        
+                        <div class="navigation-buttons">
+                            <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()" disabled data-i18n="common.previous">上一步</button>
+                            <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" data-i18n="common.next">下一步</button>
+                        </div>
+                    </div>
+                    
+                    <div class="report-section" id="reportSection" style="display: none;">
+                        <div class="report-header">
+                            <h2 data-i18n="admission.report.title">个性化学业规划报告</h2>
+                            <div class="student-info" id="studentInfo"></div>
+                        </div>
+                        
+                        <div class="report-content">
+                            <div class="report-card">
+                                <h3><i class="fas fa-book"></i> <span data-i18n="admission.report.recommendations">选课建议</span></h3>
+                                <div id="courseRecommendations"></div>
+                            </div>
+                            
+                            <div class="report-card">
+                                <h3><i class="fas fa-calendar-alt"></i> <span data-i18n="admission.report.timeline">时间规划</span></h3>
+                                <div id="timelinePlanning"></div>
+                            </div>
+                            
+                            <div class="report-card">
+                                <h3><i class="fas fa-bullseye"></i> <span data-i18n="admission.report.expectations">预期管理</span></h3>
+                                <div id="expectationManagement"></div>
+                            </div>
+                            
+                            <div class="report-card">
+                                <h3><i class="fas fa-tasks"></i> <span data-i18n="admission.report.milestones">关键里程碑</span></h3>
+                                <div id="keyMilestones"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="report-actions">
+                            <button class="btn btn-secondary" onclick="restartQuestionnaire()" data-i18n="admission.restart">重新开始</button>
+                            <button class="btn btn-primary" onclick="downloadReport()" data-i18n="admission.download">下载报告</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 家校沟通页面 -->
+            <div id="communication" class="page">
+                <div class="page-header">
+                    <h1 data-i18n="communication.title">家校沟通平台</h1>
+                    <p data-i18n="communication.subtitle">记录每一个温馨瞬间，让家长感受孩子的校园生活</p>
+                </div>
+                
+                <div class="communication-container">
+                    <div class="record-section">
+                        <div class="quick-record">
+                            <h3 data-i18n="communication.quickRecord">快速记录</h3>
+                            <form id="interactionForm">
+                                <div class="form-group">
+                                    <label data-i18n="communication.student">学生姓名</label>
+                                    <select id="studentSelect" title="Select Student">
+                                        <option value="" data-i18n="communication.selectStudent">选择学生</option>
+                                        <option value="张小明">张小明</option>
+                                        <option value="李小红">李小红</option>
+                                        <option value="王小华">王小华</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label data-i18n="communication.type">互动类型</label>
+                                    <select id="interactionType" title="Interaction Type">
+                                        <option value="学习表现" data-i18n="communication.type.academic">学习表现</option>
+                                        <option value="课堂互动" data-i18n="communication.type.interaction">课堂互动</option>
+                                        <option value="课外活动" data-i18n="communication.type.activity">课外活动</option>
+                                        <option value="品格表现" data-i18n="communication.type.character">品格表现</option>
+                                        <option value="创意表达" data-i18n="communication.type.creativity">创意表达</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label data-i18n="communication.content">记录内容</label>
+                                    <textarea id="interactionContent" data-i18n-placeholder="communication.contentPlaceholder"></textarea>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label data-i18n="communication.teacher">老师姓名</label>
+                                    <input type="text" id="teacherName" data-i18n-placeholder="communication.teacherPlaceholder">
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary" data-i18n="communication.save">保存记录</button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-section">
+                        <h3 data-i18n="communication.timeline">互动时间线</h3>
+                        <div class="filter-tabs">
+                            <button class="filter-tab active" data-filter="all" data-i18n="common.all">全部</button>
+                            <button class="filter-tab" data-filter="学习表现" data-i18n="communication.type.academic">学习表现</button>
+                            <button class="filter-tab" data-filter="课堂互动" data-i18n="communication.type.interaction">课堂互动</button>
+                            <button class="filter-tab" data-filter="课外活动" data-i18n="communication.type.activity">课外活动</button>
+                        </div>
+                        
+                        <div class="timeline" id="interactionTimeline">
+                            <!-- 时间线内容将通过JavaScript动态生成 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 学业反馈页面 -->
+            <div id="academic" class="page">
+                <div class="page-header">
+                    <h1 data-i18n="academic.title">学业反馈分析</h1>
+                    <p data-i18n="academic.subtitle">数据驱动的学业表现分析与发展建议</p>
+                </div>
+                
+                <div class="academic-container">
+                    <div class="student-selector">
+                        <label data-i18n="academic.selectStudent">选择学生：</label>
+                        <select id="academicStudentSelect" onchange="loadAcademicData()" title="Select Student">
+                            <option value="张小明">张小明</option>
+                            <option value="李小红">李小红</option>
+                            <option value="王小华">王小华</option>
+                        </select>
+                    </div>
+                    
+                    <div class="academic-grid">
+                        <div class="academic-card">
+                            <h3 data-i18n="academic.radarChart">学科表现雷达图</h3>
+                            <div class="chart-container">
+                                <canvas id="radarChart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="academic-card">
+                            <h3 data-i18n="academic.trendChart">成绩趋势分析</h3>
+                            <div class="chart-container">
+                                <canvas id="trendChart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="academic-card full-width">
+                            <h3 data-i18n="academic.aiReport">AI 学业分析报告</h3>
+                            <div class="ai-report" id="aiReport">
+                                <!-- AI报告内容 -->
+                            </div>
+                        </div>
+                        
+                        <div class="academic-card">
+                            <h3 data-i18n="academic.suggestions">发展建议</h3>
+                            <div class="suggestions" id="developmentSuggestions">
+                                <!-- 发展建议内容 -->
+                            </div>
+                        </div>
+                        
+                        <div class="academic-card">
+                            <h3 data-i18n="academic.keyMetrics">关键指标</h3>
+                            <div class="key-metrics" id="keyMetrics">
+                                <!-- 关键指标内容 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 升学指导页面 -->
+            <div id="guidance" class="page">
+                <div class="page-header">
+                    <h1 data-i18n="guidance.title">升学指导系统</h1>
+                    <p data-i18n="guidance.subtitle">可视化升学路径，智能目标调整与进度追踪</p>
+                </div>
+                
+                <div class="guidance-container">
+                    <div class="student-selector">
+                        <label data-i18n="guidance.selectStudent">选择学生：</label>
+                        <select id="guidanceStudentSelect" onchange="loadGuidanceData()" title="Select Student">
+                            <option value="张小明">张小明</option>
+                            <option value="李小红">李小红</option>
+                            <option value="王小华">王小华</option>
+                        </select>
+                    </div>
+                    
+                    <div class="guidance-grid">
+                        <div class="pathway-visualization">
+                            <h3 data-i18n="guidance.pathwayChart">升学路径图</h3>
+                            <div id="pathwayChart" style="height: 500px;"></div>
+                        </div>
+                        
+                        <div class="progress-dashboard">
+                            <h3 data-i18n="guidance.progressDashboard">进度仪表盘</h3>
+                            <div class="progress-items" id="progressItems">
+                                <!-- 进度项目 -->
+                            </div>
+                        </div>
+                        
+                        <div class="milestone-tracker">
+                            <h3 data-i18n="guidance.milestoneTracker">里程碑追踪</h3>
+                            <div class="milestones" id="milestoneList">
+                                <!-- 里程碑列表 -->
+                            </div>
+                        </div>
+                        
+                        <div class="resource-recommendations">
+                            <h3 data-i18n="guidance.resourceRecommendations">资源推荐</h3>
+                            <div class="resources" id="resourceList">
+                                <!-- 资源推荐 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="scripts/data.js"></script>
+    <script src="scripts/i18n.js"></script>
+    <script src="scripts/main.js"></script>
+    <script src="scripts/admission.js"></script>
+    <script src="scripts/communication.js"></script>
+    <script src="scripts/academic.js"></script>
+    <script src="scripts/guidance.js"></script>
+</body>
+</html>
