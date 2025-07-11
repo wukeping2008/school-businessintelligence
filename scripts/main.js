@@ -2,6 +2,7 @@
 class SchoolBIPortal {
     constructor() {
         this.currentPage = 'dashboard';
+        this.currentCampus = 'shanghai';
         this.init();
     }
 
@@ -106,24 +107,24 @@ class SchoolBIPortal {
                     {
                         label: datasetLabels.admission,
                         data: [120, 135, 140, 156, 165, 180],
-                        borderColor: '#667eea',
-                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        borderColor: '#F4C430',
+                        backgroundColor: 'rgba(244, 196, 48, 0.1)',
                         tension: 0.4,
                         fill: true
                     },
                     {
                         label: datasetLabels.communication,
                         data: [280, 295, 310, 342, 358, 375],
-                        borderColor: '#f093fb',
-                        backgroundColor: 'rgba(240, 147, 251, 0.1)',
+                        borderColor: '#FF6B35',
+                        backgroundColor: 'rgba(255, 107, 53, 0.1)',
                         tension: 0.4,
                         fill: true
                     },
                     {
                         label: datasetLabels.academic,
                         data: [45, 52, 58, 65, 72, 78],
-                        borderColor: '#4facfe',
-                        backgroundColor: 'rgba(79, 172, 254, 0.1)',
+                        borderColor: '#2B3A67',
+                        backgroundColor: 'rgba(43, 58, 103, 0.1)',
                         tension: 0.4,
                         fill: true
                     }
@@ -394,6 +395,77 @@ class SchoolBIPortal {
 function navigateToPage(pageName) {
     if (window.app) {
         window.app.navigateToPage(pageName);
+    }
+}
+
+// 校区切换功能
+function switchCampus(campus) {
+    if (window.app) {
+        window.app.currentCampus = campus;
+        
+        // 应用校区主题
+        const campusThemes = {
+            shanghai: {
+                primary: '#2B3A67',
+                secondary: '#F4C430',
+                accent: '#FF6B35',
+                name: '上海校区'
+            },
+            beijing: {
+                primary: '#1E2A54',
+                secondary: '#FFD700',
+                accent: '#E55A4E',
+                name: '北京校区'
+            },
+            ningbo: {
+                primary: '#3D4F7A',
+                secondary: '#F4C430',
+                accent: '#FF8A65',
+                name: '宁波校区'
+            }
+        };
+        
+        const theme = campusThemes[campus];
+        if (theme) {
+            // 更新CSS变量
+            document.documentElement.style.setProperty('--primary-color', theme.primary);
+            document.documentElement.style.setProperty('--secondary-color', theme.secondary);
+            document.documentElement.style.setProperty('--accent-color', theme.accent);
+            
+            // 显示切换通知
+            window.app.showNotification(`已切换到${theme.name}`, 'success');
+            
+            // 重新加载当前页面数据
+            window.app.initializePage(window.app.currentPage);
+        }
+    }
+}
+
+// 语言切换功能
+function switchLanguage(lang) {
+    if (window.i18n) {
+        window.i18n.setLanguage(lang);
+        
+        // 更新语言按钮状态
+        const langButtons = document.querySelectorAll('.lang-btn');
+        langButtons.forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.onclick.toString().includes(lang)) {
+                btn.classList.add('active');
+            }
+        });
+        
+        // 重新渲染页面内容
+        window.i18n.updatePageContent();
+        
+        // 重新创建图表（更新标签）
+        if (window.app && window.app.currentPage === 'dashboard') {
+            window.app.createOverviewChart();
+        }
+        
+        // 显示切换通知
+        const message = lang === 'zh' ? '已切换到中文' : 'Switched to English';
+        window.app.showNotification(message, 'success');
     }
 }
 

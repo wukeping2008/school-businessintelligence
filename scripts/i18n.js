@@ -34,11 +34,24 @@ class I18n {
                 // 导航
                 'nav.logo': '智慧校园门户',
                 'nav.home': '首页',
+                'nav.dashboard': '数据概览',
                 'nav.admission': '招生咨询',
                 'nav.communication': '家校沟通',
                 'nav.academic': '学业反馈',
                 'nav.guidance': '升学指导',
                 'nav.admin': '管理员',
+
+                // 校区
+                'campus.shanghai': '上海校区',
+                'campus.beijing': '北京校区',
+                'campus.ningbo': '宁波校区',
+
+                // 语言
+                'lang.zh': '中文',
+                'lang.en': 'English',
+
+                // 用户
+                'user.welcome': '欢迎，管理员',
 
                 // 首页概览
                 'home.overview.title': '月度数据趋势',
@@ -259,11 +272,24 @@ class I18n {
                 // Navigation
                 'nav.logo': 'Smart Campus Portal',
                 'nav.home': 'Home',
+                'nav.dashboard': 'Dashboard',
                 'nav.admission': 'Admission',
                 'nav.communication': 'Communication',
                 'nav.academic': 'Academic',
                 'nav.guidance': 'Guidance',
                 'nav.admin': 'Admin',
+
+                // Campus
+                'campus.shanghai': 'Shanghai Campus',
+                'campus.beijing': 'Beijing Campus',
+                'campus.ningbo': 'Ningbo Campus',
+
+                // Language
+                'lang.zh': '中文',
+                'lang.en': 'English',
+
+                // User
+                'user.welcome': 'Welcome, Admin',
 
                 // Home Overview
                 'home.overview.title': 'Monthly Data Trends',
@@ -590,7 +616,7 @@ class I18n {
                 background: rgba(255, 255, 255, 0.1);
                 border: 1px solid rgba(255, 255, 255, 0.2);
                 border-radius: 20px;
-                color: #666;
+                color: rgba(255, 255, 255, 0.9);
                 cursor: pointer;
                 transition: all 0.3s ease;
                 font-size: 14px;
@@ -599,6 +625,7 @@ class I18n {
             .language-btn:hover {
                 background: rgba(255, 255, 255, 0.2);
                 border-color: rgba(255, 255, 255, 0.3);
+                color: #F4C430;
             }
             
             .language-dropdown {
@@ -689,6 +716,7 @@ class I18n {
     updateLanguageToggle() {
         const languageText = document.querySelector('.language-text');
         if (languageText) {
+            // 显示当前选择的语言
             languageText.textContent = this.currentLang === 'zh' ? '中文' : 'English';
         }
 

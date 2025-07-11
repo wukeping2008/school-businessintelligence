@@ -12,40 +12,52 @@
 <body>
     <div class="app-container">
         <!-- 顶部导航 -->
-        <header class="header">
-            <div class="header-content">
-                <div class="logo">
-                    <i class="fas fa-graduation-cap"></i>
-                    <span data-i18n="nav.logo">智慧校园门户</span>
-                </div>
-                <nav class="nav-menu">
-                    <a href="#" class="nav-item active" data-page="dashboard">
-                        <i class="fas fa-home"></i>
-                        <span data-i18n="nav.home">首页</span>
-                    </a>
-                    <a href="#" class="nav-item" data-page="admission">
-                        <i class="fas fa-user-plus"></i>
-                        <span data-i18n="nav.admission">招生咨询</span>
-                    </a>
-                    <a href="#" class="nav-item" data-page="communication">
-                        <i class="fas fa-comments"></i>
-                        <span data-i18n="nav.communication">家校沟通</span>
-                    </a>
-                    <a href="#" class="nav-item" data-page="academic">
-                        <i class="fas fa-chart-line"></i>
-                        <span data-i18n="nav.academic">学业反馈</span>
-                    </a>
-                    <a href="#" class="nav-item" data-page="guidance">
-                        <i class="fas fa-route"></i>
-                        <span data-i18n="nav.guidance">升学指导</span>
-                    </a>
-                </nav>
-                <div class="user-info">
-                    <i class="fas fa-user-circle"></i>
-                    <span data-i18n="nav.admin">管理员</span>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <div>
+                    <div style="font-size: 24px; font-weight: bold;">HD SCHOOLS</div>
+                    <div style="font-size: 12px; opacity: 0.8;" data-i18n="nav.logo">智慧校园门户</div>
                 </div>
             </div>
-        </header>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span data-i18n="nav.dashboard">数据概览</span>
+                </a>
+                <a href="#" class="nav-item" data-page="admission">
+                    <i class="fas fa-user-plus"></i>
+                    <span data-i18n="nav.admission">招生咨询</span>
+                </a>
+                <a href="#" class="nav-item" data-page="communication">
+                    <i class="fas fa-comments"></i>
+                    <span data-i18n="nav.communication">家校沟通</span>
+                </a>
+                <a href="#" class="nav-item" data-page="academic">
+                    <i class="fas fa-chart-line"></i>
+                    <span data-i18n="nav.academic">学业反馈</span>
+                </a>
+                <a href="#" class="nav-item" data-page="guidance">
+                    <i class="fas fa-route"></i>
+                    <span data-i18n="nav.guidance">升学指导</span>
+                </a>
+            </nav>
+            <div class="header-actions">
+                <div class="campus-selector">
+                    <select id="campusSelect" onchange="switchCampus(this.value)" title="Select Campus">
+                        <option value="shanghai" data-i18n="campus.shanghai">上海校区</option>
+                        <option value="beijing" data-i18n="campus.beijing">北京校区</option>
+                        <option value="ningbo" data-i18n="campus.ningbo">宁波校区</option>
+                    </select>
+                </div>
+                <div class="user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span data-i18n="user.welcome">欢迎，管理员</span>
+                </div>
+            </div>
+        </div>
+    </header>
 
         <!-- 主要内容区域 -->
         <main class="main-content">
