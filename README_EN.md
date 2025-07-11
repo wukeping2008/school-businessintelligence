@@ -119,11 +119,6 @@ For a quick look, you can directly open the `index.html` file in your browser.
 - **Chrome DevTools**: Debugging and performance analysis
 - **Git**: Version control
 
-### Deployment Environment
-- **Server**: Alibaba Cloud ECS
-- **Web Server**: Nginx
-- **Domain**: inspire.long-arena.com
-
 ---
 
 ## 📁 Project Structure
