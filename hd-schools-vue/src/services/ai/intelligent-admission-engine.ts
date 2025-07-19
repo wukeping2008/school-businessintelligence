@@ -3,7 +3,7 @@
  * 核心AI驱动的招生咨询系统
  */
 
-import { AIServiceFactory, AIServiceBase, ChatMessage } from './ai-service-base'
+import { AIServiceFactory, AIServiceBase, type ChatMessage } from './ai-service-base'
 
 export interface StudentProfile {
   name?: string
@@ -62,12 +62,159 @@ export interface TimelineItem {
   category: 'academic' | 'extracurricular' | 'application'
 }
 
+/**
+ * 学生档案分析器
+ * 负责从对话中提取和分析学生信息
+ */
+class StudentProfileAnalyzer {
+  private interestKeywords = new Map([
+    ['计算机', ['计算机', '编程', '软件', 'computer', 'programming', 'coding', 'IT', '人工智能', 'AI']],
+    ['商业', ['商业', '管理', '经济', 'business', 'management', '金融', 'finance', '市场营销', 'marketing']],
+    ['工程', ['工程', '机械', '电子', 'engineering', '建筑', 'architecture', '土木', 'civil']],
+    ['医学', ['医学', '生物', '化学', 'medicine', 'biology', '护理', 'nursing', '药学', 'pharmacy']],
+    ['艺术', ['艺术', '设计', '美术', 'art', 'design', '音乐', 'music', '戏剧', 'drama']],
+    ['理科', ['数学', '物理', 'math', 'physics', '统计', 'statistics', '天文', 'astronomy']]
+  ])
+
+  private universityKeywords = new Map([
+    ['剑桥大学', ['剑桥', 'cambridge', 'cam']],
+    ['牛津大学', ['牛津', 'oxford', 'ox']],
+    ['帝国理工学院', ['帝国理工', 'imperial', 'ic']],
+    ['伦敦大学学院', ['伦敦大学', 'ucl', 'university college london']],
+    ['华威大学', ['华威', 'warwick']],
+    ['爱丁堡大学', ['爱丁堡', 'edinburgh']],
+    ['曼彻斯特大学', ['曼彻斯特', 'manchester']],
+    ['伦敦政治经济学院', ['lse', 'london school of economics']]
+  ])
+
+  private gradeKeywords = [
+    'year 7', 'year 8', 'year 9', 'year 10', 'year 11', 'year 12', 'year 13',
+    '7年级', '8年级', '9年级', '10年级', '11年级', '12年级', '13年级',
+    'grade 7', 'grade 8', 'grade 9', 'grade 10', 'grade 11', 'grade 12', 'grade 13'
+  ]
+
+  /**
+   * 分析用户输入并提取学生信息
+   */
+  analyzeInput(input: string): {
+    interests: string[]
+    universities: string[]
+    grade?: string
+    strengths: string[]
+    concerns: string[]
+  } {
+    const lowerInput = input.toLowerCase()
+    const result = {
+      interests: [] as string[],
+      universities: [] as string[],
+      grade: undefined as string | undefined,
+      strengths: [] as string[],
+      concerns: [] as string[]
+    }
+
+    // 分析兴趣领域
+    for (const [category, keywords] of this.interestKeywords) {
+      if (keywords.some(keyword => lowerInput.includes(keyword.toLowerCase()))) {
+        if (!result.interests.includes(category)) {
+          result.interests.push(category)
+        }
+      }
+    }
+
+    // 分析目标大学
+    for (const [university, keywords] of this.universityKeywords) {
+      if (keywords.some(keyword => lowerInput.includes(keyword.toLowerCase()))) {
+        if (!result.universities.includes(university)) {
+          result.universities.push(university)
+        }
+      }
+    }
+
+    // 分析年级
+    const gradeMatch = input.match(/(\d+)年级|year\s*(\d+)|grade\s*(\d+)/i)
+    if (gradeMatch) {
+      result.grade = gradeMatch[1] || gradeMatch[2] || gradeMatch[3]
+    }
+
+    // 分析优势和担忧
+    if (lowerInput.includes('擅长') || lowerInput.includes('好') || lowerInput.includes('强')) {
+      result.strengths.push('学术能力强')
+    }
+    if (lowerInput.includes('担心') || lowerInput.includes('困难') || lowerInput.includes('问题')) {
+      result.concerns.push('需要额外支持')
+    }
+
+    return result
+  }
+
+  /**
+   * 评估档案完整度
+   */
+  assessProfileCompleteness(profile: StudentProfile): {
+    completeness: number
+    missingFields: string[]
+    suggestions: string[]
+  } {
+    const requiredFields = ['name', 'grade', 'interests', 'targetUniversities']
+    const optionalFields = ['strengths', 'currentGrades', 'extracurriculars', 'careerGoals']
+    
+    let completedRequired = 0
+    let completedOptional = 0
+    const missingFields: string[] = []
+    const suggestions: string[] = []
+
+    // 检查必填字段
+    requiredFields.forEach(field => {
+      const value = profile[field as keyof StudentProfile]
+      if (value && (Array.isArray(value) ? value.length > 0 : true)) {
+        completedRequired++
+      } else {
+        missingFields.push(field)
+      }
+    })
+
+    // 检查可选字段
+    optionalFields.forEach(field => {
+      const value = profile[field as keyof StudentProfile]
+      if (value && (Array.isArray(value) ? value.length > 0 : true)) {
+        completedOptional++
+      }
+    })
+
+    const completeness = (completedRequired / requiredFields.length) * 0.7 + 
+                        (completedOptional / optionalFields.length) * 0.3
+
+    // 生成建议
+    if (!profile.interests?.length) {
+      suggestions.push('了解学生的兴趣领域和专业倾向')
+    }
+    if (!profile.targetUniversities?.length) {
+      suggestions.push('询问目标大学和地区偏好')
+    }
+    if (!profile.currentGrades) {
+      suggestions.push('了解当前学术成绩情况')
+    }
+    if (!profile.extracurriculars?.length) {
+      suggestions.push('了解课外活动和特长')
+    }
+
+    return {
+      completeness: Math.round(completeness * 100),
+      missingFields,
+      suggestions
+    }
+  }
+}
+
 export class IntelligentAdmissionEngine {
   private aiService: AIServiceBase | null = null
   private sessions: Map<string, ConsultationSession> = new Map()
+  private conversationContext: Map<string, ChatMessage[]> = new Map()
+  private profileAnalyzer: StudentProfileAnalyzer
 
   constructor() {
     this.initializeAI()
+    this.profileAnalyzer = new StudentProfileAnalyzer()
   }
 
   private async initializeAI(): Promise<void> {
@@ -241,68 +388,57 @@ export class IntelligentAdmissionEngine {
   }
 
   private async analyzeAndUpdateProfile(session: ConsultationSession, userInput: string): Promise<void> {
-    if (!this.aiService) return
-
     try {
-      const analysis = await this.aiService.analyze(userInput, 'student_profile')
-      
-      if (analysis.success && analysis.data) {
-        const profile = session.studentProfile
-        
-        // 提取并更新学生信息
-        if (analysis.data.interests) {
-          profile.interests = [...(profile.interests || []), ...analysis.data.interests]
-        }
-        
-        if (analysis.data.strengths) {
-          profile.strengths = [...(profile.strengths || []), ...analysis.data.strengths]
-        }
+      // 使用新的档案分析器
+      const analysisResult = this.profileAnalyzer.analyzeInput(userInput)
+      const profile = session.studentProfile
 
-        // 简单的关键词提取
-        const lowerInput = userInput.toLowerCase()
-        
-        // 年级识别
-        if (lowerInput.includes('年级') || lowerInput.includes('grade')) {
-          const gradeMatch = userInput.match(/(\d+)年级|grade\s*(\d+)/i)
-          if (gradeMatch) {
-            profile.grade = gradeMatch[1] || gradeMatch[2]
-          }
-        }
-
-        // 兴趣识别
-        const interestKeywords = [
-          '计算机', '编程', '软件', 'computer', 'programming',
-          '商业', '管理', '经济', 'business', 'management',
-          '工程', '机械', '电子', 'engineering',
-          '医学', '生物', '化学', 'medicine', 'biology',
-          '艺术', '设计', '美术', 'art', 'design',
-          '数学', '物理', 'math', 'physics'
-        ]
-
-        interestKeywords.forEach(keyword => {
-          if (lowerInput.includes(keyword)) {
-            if (!profile.interests) profile.interests = []
-            if (!profile.interests.includes(keyword)) {
-              profile.interests.push(keyword)
-            }
-          }
-        })
-
-        // 大学识别
-        const universityKeywords = [
-          '剑桥', '牛津', '帝国理工', '伦敦大学', '华威',
-          'cambridge', 'oxford', 'imperial', 'ucl', 'warwick'
-        ]
-
-        universityKeywords.forEach(uni => {
-          if (lowerInput.includes(uni)) {
-            if (!profile.targetUniversities) profile.targetUniversities = []
-            if (!profile.targetUniversities.includes(uni)) {
-              profile.targetUniversities.push(uni)
-            }
-          }
-        })
+      // 更新兴趣领域
+      if (analysisResult.interests.length > 0) {
+        profile.interests = [...new Set([...(profile.interests || []), ...analysisResult.interests])]
       }
+
+      // 更新目标大学
+      if (analysisResult.universities.length > 0) {
+        profile.targetUniversities = [...new Set([...(profile.targetUniversities || []), ...analysisResult.universities])]
+      }
+
+      // 更新年级
+      if (analysisResult.grade) {
+        profile.grade = analysisResult.grade
+      }
+
+      // 更新优势
+      if (analysisResult.strengths.length > 0) {
+        profile.strengths = [...new Set([...(profile.strengths || []), ...analysisResult.strengths])]
+      }
+
+      // 更新担忧
+      if (analysisResult.concerns.length > 0) {
+        profile.concerns = [...new Set([...(profile.concerns || []), ...analysisResult.concerns])]
+      }
+
+      // 如果有AI服务，也尝试使用AI分析
+      if (this.aiService) {
+        const aiAnalysis = await this.aiService.analyze(userInput, 'student_profile')
+        if (aiAnalysis.success && aiAnalysis.data) {
+          // 合并AI分析结果
+          if (aiAnalysis.data.interests) {
+            profile.interests = [...new Set([...(profile.interests || []), ...aiAnalysis.data.interests])]
+          }
+          if (aiAnalysis.data.strengths) {
+            profile.strengths = [...new Set([...(profile.strengths || []), ...aiAnalysis.data.strengths])]
+          }
+        }
+      }
+
+      // 记录分析日志
+      console.log('档案分析结果:', {
+        input: userInput.substring(0, 50) + '...',
+        extracted: analysisResult,
+        updatedProfile: profile
+      })
+
     } catch (error) {
       console.error('分析用户输入失败:', error)
     }

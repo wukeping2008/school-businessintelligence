@@ -289,6 +289,10 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, nextTick } from 'vue'
+import { IntelligentAdmissionEngine, type ConsultationSession, type AcademicPlan } from '@/services/ai/intelligent-admission-engine'
+
+// AI引擎实例
+const admissionEngine = new IntelligentAdmissionEngine()
 
 // 响应式数据
 const userInput = ref('')
@@ -302,20 +306,37 @@ const showPlanDialog = ref(false)
 const isGeneratingPlan = ref(false)
 const messagesContainer = ref<HTMLElement>()
 
-// 学生档案
-const studentProfile = ref({
-  name: '',
-  grade: '',
-  interests: [] as string[],
-  targetUniversities: [] as string[]
+// 当前会话
+const currentSession = ref<ConsultationSession | null>(null)
+
+// 学生档案（从会话中获取）
+const studentProfile = computed(() => {
+  return currentSession.value?.studentProfile || {
+    name: '',
+    grade: '',
+    interests: [],
+    targetUniversities: []
+  }
 })
 
-// 咨询状态
-const currentStage = ref('初始问候')
-const completionPercentage = ref(0)
+// 咨询状态（从会话中获取）
+const currentStage = computed(() => {
+  const stageMap = {
+    'greeting': '初始问候',
+    'profiling': '信息收集',
+    'analysis': '深度分析',
+    'planning': '规划制定',
+    'summary': '总结完成'
+  }
+  return stageMap[currentSession.value?.currentStage || 'greeting'] || '初始问候'
+})
+
+const completionPercentage = computed(() => {
+  return currentSession.value?.completionPercentage || 0
+})
 
 // 生成的规划
-const generatedPlan = ref<any>(null)
+const generatedPlan = ref<AcademicPlan | null>(null)
 
 // 计算属性
 const canGeneratePlan = computed(() => {
@@ -323,81 +344,86 @@ const canGeneratePlan = computed(() => {
 })
 
 // 方法
-const startNewConsultation = () => {
+const startNewConsultation = async () => {
   const studentName = prompt('请输入学生姓名:')
   if (studentName) {
-    studentProfile.value.name = studentName
-    messages.value = []
-    
-    // 添加欢迎消息
-    const welcomeMessage = `您好${studentName}同学！👋 欢迎来到HD Schools智能升学咨询系统！
-
-我是您的专属AI升学顾问，将为您提供个性化的学业规划和升学指导。
-
-🎯 **我可以帮助您：**
-✅ 分析您的学术优势和兴趣方向
-✅ 推荐适合的专业和目标大学
-✅ 制定详细的学业提升计划
-✅ 规划课外活动和竞赛参与
-✅ 优化申请时间线和策略
-
-为了给您最精准的建议，我想先了解一下您的情况。请告诉我：
-
-**您目前在读几年级？对哪些专业领域比较感兴趣？**
-
-比如：计算机科学、商业管理、工程学、医学、艺术设计等等...`
-
-    messages.value.push({
-      role: 'assistant',
-      content: welcomeMessage,
-      timestamp: new Date()
-    })
-    
-    currentStage.value = '初始问候'
-    completionPercentage.value = 10
-    
-    nextTick(() => {
-      scrollToBottom()
-    })
+    try {
+      // 使用AI引擎开始新的咨询会话
+      const session = await admissionEngine.startConsultation(studentName)
+      currentSession.value = session
+      
+      // 更新消息列表
+      messages.value = session.messages.map(msg => ({
+        role: msg.role,
+        content: msg.content,
+        timestamp: msg.timestamp || new Date()
+      }))
+      
+      // 清空生成的规划
+      generatedPlan.value = null
+      
+      nextTick(() => {
+        scrollToBottom()
+      })
+    } catch (error) {
+      console.error('启动咨询会话失败:', error)
+      alert('启动咨询失败，请稍后重试')
+    }
   }
 }
 
 const sendMessage = async () => {
   if (!userInput.value.trim() || isThinking.value) return
   
-  if (!studentProfile.value.name) {
-    startNewConsultation()
-    if (!studentProfile.value.name) return
+  if (!currentSession.value) {
+    await startNewConsultation()
+    if (!currentSession.value) return
   }
 
   const message = userInput.value.trim()
   userInput.value = ''
   isThinking.value = true
 
-  // 添加用户消息
-  messages.value.push({
-    role: 'user',
-    content: message,
-    timestamp: new Date()
-  })
+  try {
+    // 使用AI引擎处理用户输入
+    const result = await admissionEngine.processUserInput(currentSession.value.id, message)
+    
+    // 更新会话
+    currentSession.value = result.session
+    
+    // 更新消息列表
+    messages.value = result.session.messages.map(msg => ({
+      role: msg.role === 'system' ? 'assistant' : msg.role,
+      content: msg.content,
+      timestamp: msg.timestamp || new Date()
+    }))
 
-  // 分析用户输入并更新档案
-  analyzeUserInput(message)
+    // 如果建议生成规划，自动触发
+    if (result.shouldGeneratePlan && !generatedPlan.value) {
+      setTimeout(() => {
+        generateAcademicPlan()
+      }, 1000)
+    }
 
-  // 模拟AI思考时间
-  await new Promise(resolve => setTimeout(resolve, 1500))
+  } catch (error) {
+    console.error('发送消息失败:', error)
+    
+    // 降级到简单模式
+    messages.value.push({
+      role: 'user',
+      content: message,
+      timestamp: new Date()
+    })
 
-  // 生成AI回复
-  const aiResponse = generateAIResponse(message)
-  
-  messages.value.push({
-    role: 'assistant',
-    content: aiResponse,
-    timestamp: new Date()
-  })
+    await new Promise(resolve => setTimeout(resolve, 1500))
 
-  // 更新进度
-  updateProgress()
+    const aiResponse = generateAIResponse(message)
+    messages.value.push({
+      role: 'assistant',
+      content: aiResponse,
+      timestamp: new Date()
+    })
+  }
 
   isThinking.value = false
   
