@@ -28,6 +28,14 @@
             <span>{{ t('nav.admission') }}</span>
           </router-link>
           <router-link 
+            to="/admission-ai" 
+            class="nav-item" 
+            :class="{ active: $route.name === 'admissionAI' }"
+          >
+            <i class="fas fa-robot"></i>
+            <span>{{ t('nav.admissionAI') }}</span>
+          </router-link>
+          <router-link 
             to="/communication" 
             class="nav-item" 
             :class="{ active: $route.name === 'communication' }"
@@ -50,6 +58,14 @@
           >
             <i class="fas fa-route"></i>
             <span>{{ t('nav.guidance') }}</span>
+          </router-link>
+          <router-link 
+            to="/teacher-dashboard" 
+            class="nav-item" 
+            :class="{ active: $route.path.startsWith('/teacher-dashboard') }"
+          >
+            <i class="fas fa-chalkboard-teacher"></i>
+            <span>{{ t('nav.teacherDashboard') }}</span>
           </router-link>
         </nav>
         <div class="header-actions">

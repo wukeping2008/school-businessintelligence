@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { storage } from '@/utils'
+import { storage } from '../utils'
 
 type Language = 'zh' | 'en'
 
@@ -19,9 +19,11 @@ export const useI18nStore = defineStore('i18n', () => {
         logo: '智慧校园门户',
         dashboard: '数据概览',
         admission: '招生咨询',
+        admissionAI: 'AI智能咨询',
         communication: '家校沟通',
         academic: '学业反馈',
-        guidance: '升学指导'
+        guidance: '升学指导',
+        teacherDashboard: '教师工作台'
       },
       campus: {
         shanghai: '上海校区',
@@ -75,6 +77,69 @@ export const useI18nStore = defineStore('i18n', () => {
         },
         restart: '重新开始',
         download: '下载报告'
+      },
+      admissionAI: {
+        title: 'AI智能招生咨询',
+        subtitle: '基于人工智能的个性化升学指导系统',
+        chatTitle: 'AI升学顾问',
+        online: '在线',
+        offline: '离线',
+        thinking: 'AI正在思考中',
+        inputPlaceholder: '请输入您的问题或想法...',
+        inputTips: 'Ctrl + Enter 快速发送',
+        send: '发送',
+        clearChat: '清空对话',
+        clearChatConfirm: '确定要清空当前对话吗？',
+        consultationProgress: '咨询进度',
+        studentProfile: '学生档案',
+        quickActions: '快速操作',
+        generatePlan: '生成学业规划',
+        newConsultation: '新建咨询',
+        viewHistory: '查看历史',
+        academicPlan: '学业规划报告',
+        planSummary: '规划摘要',
+        recommendedUniversities: '推荐大学',
+        recommendations: '建议',
+        nextSteps: '下一步行动',
+        requirements: '申请要求',
+        matchScore: '匹配度',
+        close: '关闭',
+        downloadPlan: '下载规划',
+        enterStudentName: '请输入学生姓名',
+        studentNamePlaceholder: '例如：张三',
+        start: '开始',
+        cancel: '取消',
+        confirm: '确认',
+        consultationStarted: '咨询会话已开始',
+        canGeneratePlanNow: '信息收集完成，现在可以生成学业规划了！',
+        sendMessageError: '发送消息失败，请重试',
+        planGenerated: '学业规划生成成功',
+        generatePlanError: '生成学业规划失败，请重试',
+        chatCleared: '对话已清空',
+        planDownloaded: '规划已下载',
+        historyFeatureComingSoon: '历史记录功能即将推出',
+        emptyProfile: '开始对话后，学生档案信息将在这里显示',
+        progressText: '咨询进度：{percentage}%',
+        stages: {
+          greeting: '初始问候',
+          profiling: '信息收集',
+          analysis: '深度分析',
+          planning: '规划制定',
+          summary: '总结完成'
+        },
+        profile: {
+          name: '姓名',
+          grade: '年级',
+          gradeUnit: '年级',
+          interests: '兴趣领域',
+          targetUniversities: '目标大学',
+          strengths: '优势特长'
+        },
+        universityTypes: {
+          reach: '冲刺目标',
+          target: '稳妥选择',
+          safety: '保底选择'
+        }
       },
       communication: {
         title: '家校沟通平台',
@@ -141,9 +206,11 @@ export const useI18nStore = defineStore('i18n', () => {
         logo: 'Smart Campus Portal',
         dashboard: 'Dashboard',
         admission: 'Admission',
+        admissionAI: 'AI Consultation',
         communication: 'Communication',
         academic: 'Academic',
-        guidance: 'Guidance'
+        guidance: 'Guidance',
+        teacherDashboard: 'Teacher Dashboard'
       },
       campus: {
         shanghai: 'Shanghai Campus',
@@ -376,3 +443,16 @@ export const useI18nStore = defineStore('i18n', () => {
     initialize
   }
 })
+
+// 导出便捷的useI18n函数
+export const useI18n = () => {
+  const store = useI18nStore()
+  return {
+    t: store.t,
+    currentLanguage: store.currentLanguage,
+    setLanguage: store.setLanguage,
+    toggleLanguage: store.toggleLanguage,
+    isEnglish: store.isEnglish,
+    isChinese: store.isChinese
+  }
+}

@@ -1,0 +1,45 @@
+// SCSS 变量文件
+// 主要颜色
+$primary-color: #409eff;
+$success-color: #67c23a;
+$warning-color: #e6a23c;
+$danger-color: #f56c6c;
+$info-color: #909399;
+
+// 文本颜色
+$text-primary: #303133;
+$text-regular: #606266;
+$text-secondary: #909399;
+$text-placeholder: #c0c4cc;
+
+// 边框颜色
+$border-base: #dcdfe6;
+$border-light: #e4e7ed;
+$border-lighter: #ebeef5;
+$border-extra-light: #f2f6fc;
+
+// 背景颜色
+$background-base: #f5f7fa;
+$background-light: #fafafa;
+
+// CSS变量定义
+:root {
+  --hd-primary-color: #{$primary-color};
+  --hd-success-color: #{$success-color};
+  --hd-warning-color: #{$warning-color};
+  --hd-danger-color: #{$danger-color};
+  --hd-info-color: #{$info-color};
+  
+  --hd-text-primary: #{$text-primary};
+  --hd-text-regular: #{$text-regular};
+  --hd-text-secondary: #{$text-secondary};
+  --hd-text-placeholder: #{$text-placeholder};
+  
+  --hd-border-base: #{$border-base};
+  --hd-border-light: #{$border-light};
+  --hd-border-lighter: #{$border-lighter};
+  --hd-border-extra-light: #{$border-extra-light};
+  
+  --hd-background-base: #{$background-base};
+  --hd-background-light: #{$background-light};
+}
