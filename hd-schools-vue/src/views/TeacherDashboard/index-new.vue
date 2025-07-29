@@ -615,7 +615,7 @@ const startDiscussion = () => {
 }
 
 const scheduleMeeting = () => {
-  ElMessage.info('会议安排功能开发中')
+  router.push('/teacher-dashboard-full/meetings')
 }
 
 const createReport = () => {

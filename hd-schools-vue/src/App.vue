@@ -60,7 +60,7 @@
             <span>{{ t('nav.guidance') }}</span>
           </router-link>
           <router-link 
-            to="/teacher-dashboard" 
+            to="/teacher-dashboard-full" 
             class="nav-item" 
             :class="{ active: $route.path.startsWith('/teacher-dashboard') }"
           >

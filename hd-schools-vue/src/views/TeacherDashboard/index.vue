@@ -30,30 +30,38 @@
             router
             class="dashboard-menu"
           >
-            <el-menu-item index="/teacher-dashboard/overview">
+            <el-menu-item index="/teacher-dashboard-full/overview">
               <el-icon><DataAnalysis /></el-icon>
               <span>工作概览</span>
             </el-menu-item>
-            <el-menu-item index="/teacher-dashboard/students">
+            <el-menu-item index="/teacher-dashboard-full/students">
               <el-icon><UserFilled /></el-icon>
               <span>我的学生</span>
             </el-menu-item>
-            <el-menu-item index="/teacher-dashboard/pathway">
+            <el-menu-item index="/teacher-dashboard-full/pathway">
               <el-icon><Promotion /></el-icon>
               <span>升学路径</span>
             </el-menu-item>
-            <el-menu-item index="/teacher-dashboard/milestones">
+            <el-menu-item index="/teacher-dashboard-full/milestones">
               <el-icon><Flag /></el-icon>
               <span>里程碑管理</span>
             </el-menu-item>
-            <el-menu-item index="/teacher-dashboard/collaboration">
+            <el-menu-item index="/teacher-dashboard-full/collaboration">
               <el-icon><ChatDotRound /></el-icon>
               <span>协同交流</span>
               <el-badge v-if="unreadMessages > 0" :value="unreadMessages" />
             </el-menu-item>
-            <el-menu-item index="/teacher-dashboard/calendar">
+            <el-menu-item index="/teacher-dashboard-full/calendar">
               <el-icon><Calendar /></el-icon>
               <span>日程安排</span>
+            </el-menu-item>
+            <el-menu-item index="/teacher-dashboard-full/teacher-invitation">
+              <el-icon><Plus /></el-icon>
+              <span>邀请教师</span>
+            </el-menu-item>
+            <el-menu-item index="/teacher-dashboard-full/meetings">
+              <el-icon><VideoCamera /></el-icon>
+              <span>会议管理</span>
             </el-menu-item>
           </el-menu>
         </el-col>
@@ -97,7 +105,9 @@ import {
   Promotion,
   Flag,
   ChatDotRound,
-  Calendar
+  Calendar,
+  Plus,
+  VideoCamera
 } from '@element-plus/icons-vue'
 import { useTeacherDashboardStore } from '@/stores/teacherDashboard'
 

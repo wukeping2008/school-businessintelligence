@@ -135,6 +135,22 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: '日程管理'
         }
+      },
+      {
+        path: 'teacher-invitation',
+        name: 'TeacherDashboardFullInvitation',
+        component: () => import('../views/TeacherDashboard/components/TeacherInvitation.vue'),
+        meta: {
+          title: '邀请教师'
+        }
+      },
+      {
+        path: 'meetings',
+        name: 'TeacherDashboardFullMeetings',
+        component: () => import('../views/TeacherDashboard/components/MeetingManagement.vue'),
+        meta: {
+          title: '会议管理'
+        }
       }
     ]
   },
@@ -157,7 +173,7 @@ const routes: RouteRecordRaw[] = [
 ]
 
 const router = createRouter({
-  history: createWebHistory('/'),
+  history: createWebHistory('/schoolbiportal/'),
   routes,
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {

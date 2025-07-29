@@ -2,13 +2,10 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { User } from '../models/user.model';
 import logger from '../config/logger';
-
-interface AuthRequest extends Request {
-  user?: any;
-}
+import '../types/index';
 
 export const authenticate = async (
-  req: AuthRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -26,7 +23,7 @@ export const authenticate = async (
       throw new Error('用户不存在或已被禁用');
     }
     
-    req.user = user;
+    req.user = user as any;
     next();
   } catch (error) {
     logger.error('Authentication error:', error);
@@ -35,13 +32,13 @@ export const authenticate = async (
 };
 
 export const authorize = (...permissions: string[]) => {
-  return (req: AuthRequest, res: Response, next: NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     if (!req.user) {
       return res.status(401).json({ error: '未认证' });
     }
     
     const hasPermission = permissions.some(permission => 
-      req.user.hasPermission(permission)
+      req.user?.permissions?.includes(permission)
     );
     
     if (!hasPermission) {
@@ -53,7 +50,7 @@ export const authorize = (...permissions: string[]) => {
 };
 
 export const authorizeRole = (...roles: string[]) => {
-  return (req: AuthRequest, res: Response, next: NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     if (!req.user) {
       return res.status(401).json({ error: '未认证' });
     }

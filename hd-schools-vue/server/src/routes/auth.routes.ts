@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { body } from 'express-validator';
 import { User } from '../models/user.model';
 import { generateToken, generateRefreshToken } from '../utils/jwt.utils';
@@ -6,6 +6,7 @@ import { validateRequest } from '../middleware/validation.middleware';
 import { asyncHandler } from '../middleware/error.middleware';
 import { authenticate } from '../middleware/auth.middleware';
 import logger from '../config/logger';
+import '../types/index';
 
 const router = Router();
 
@@ -19,7 +20,7 @@ router.post('/register',
     body('subjects').optional().isArray().withMessage('科目必须是数组')
   ],
   validateRequest,
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const { username, email, password, role, subjects } = req.body;
     
     // 检查用户是否已存在
@@ -46,8 +47,8 @@ router.post('/register',
     await user.save();
     
     // 生成令牌
-    const token = generateToken(user._id.toString());
-    const refreshToken = generateRefreshToken(user._id.toString());
+    const token = generateToken(user.id);
+    const refreshToken = generateRefreshToken(user.id);
     
     logger.info(`New user registered: ${username} (${role})`);
     
@@ -55,7 +56,7 @@ router.post('/register',
       success: true,
       data: {
         user: {
-          id: user._id,
+          id: user.id,
           username: user.username,
           email: user.email,
           role: user.role,
@@ -75,7 +76,7 @@ router.post('/login',
     body('password').notEmpty().withMessage('请输入密码')
   ],
   validateRequest,
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const { username, password } = req.body;
     
     // 查找用户（支持用户名或邮箱登录）
@@ -101,8 +102,8 @@ router.post('/login',
     }
     
     // 生成令牌
-    const token = generateToken(user._id.toString());
-    const refreshToken = generateRefreshToken(user._id.toString());
+    const token = generateToken(user.id);
+    const refreshToken = generateRefreshToken(user.id);
     
     logger.info(`User logged in: ${user.username}`);
     
@@ -110,7 +111,7 @@ router.post('/login',
       success: true,
       data: {
         user: {
-          id: user._id,
+          id: user.id,
           username: user.username,
           email: user.email,
           role: user.role,
@@ -127,7 +128,13 @@ router.post('/login',
 // 获取当前用户信息
 router.get('/me',
   authenticate,
-  asyncHandler(async (req: any, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        error: '未认证'
+      });
+    }
     const user = await User.findById(req.user._id);
     
     if (!user) {
@@ -141,7 +148,7 @@ router.get('/me',
       success: true,
       data: {
         user: {
-          id: user._id,
+          id: user.id,
           username: user.username,
           email: user.email,
           role: user.role,
@@ -161,8 +168,15 @@ router.put('/change-password',
     body('newPassword').isLength({ min: 6 }).withMessage('新密码至少6个字符')
   ],
   validateRequest,
-  asyncHandler(async (req: any, res) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const { currentPassword, newPassword } = req.body;
+    
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        error: '未认证'
+      });
+    }
     
     const user = await User.findById(req.user._id).select('+password');
     

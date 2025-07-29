@@ -1,5 +1,4 @@
 export interface IUser {
-  _id: string;
   username: string;
   email: string;
   password: string;
@@ -12,7 +11,6 @@ export interface IUser {
 }
 
 export interface IStudent {
-  _id: string;
   basicInfo: {
     name: string;
     grade: string;
@@ -187,4 +185,13 @@ export interface IActivity {
   details?: any;
   timestamp: Date;
   ip?: string;
+}
+
+// Extend Express Request to include user
+declare global {
+  namespace Express {
+    interface Request {
+      user?: IUser & { _id: string };
+    }
+  }
 }

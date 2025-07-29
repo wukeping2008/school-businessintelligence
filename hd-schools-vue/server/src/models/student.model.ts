@@ -1,7 +1,10 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import { IStudent } from '../types';
 
-export interface IStudentDocument extends IStudent, Document {}
+export interface IStudentDocument extends IStudent, Document {
+  addTeacher(teacherRole: any): Promise<IStudentDocument>;
+  updateTargetUniversity(university: any, reason: string): Promise<IStudentDocument>;
+}
 
 const UniversitySchema = new Schema({
   id: { type: String, required: true },

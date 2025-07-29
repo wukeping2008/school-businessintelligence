@@ -386,12 +386,14 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElMessage, ElNotification } from 'element-plus'
 import { Calendar, User, Plus, VideoCamera, Filter, CircleCheck } from '@element-plus/icons-vue'
 import { useTeacherDashboardStore } from '@/stores/teacherDashboard'
 
 // 使用store
 const store = useTeacherDashboardStore()
+const router = useRouter()
 
 // 响应式数据
 const selectedStudentId = ref('')
@@ -757,12 +759,12 @@ const sendComment = () => {
 
 // 邀请教师
 const inviteTeacher = () => {
-  ElMessage.info('邀请教师功能开发中')
+  router.push('/teacher-dashboard-full/teacher-invitation')
 }
 
 // 发起视频会议
 const startVideoCall = () => {
-  ElMessage.info('视频会议功能开发中')
+  router.push('/teacher-dashboard-full/meetings')
 }
 
 // 通知进度更新

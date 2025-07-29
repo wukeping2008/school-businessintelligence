@@ -145,6 +145,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import {
   Clock,
@@ -206,21 +207,23 @@ const handleFocusItem = (item: any) => {
   // TODO: 导航到相应页面
 }
 
+const router = useRouter()
+
 // 快速操作
 const createMilestone = () => {
-  console.log('创建里程碑')
+  router.push('/teacher-dashboard-full/milestones')
 }
 
 const scheduleCollaboration = () => {
-  console.log('安排协同会议')
+  router.push('/teacher-dashboard-full/meetings')
 }
 
 const viewReports = () => {
-  console.log('查看报告')
+  ElMessage.info('报告功能正在开发中')
 }
 
 const sendNotification = () => {
-  console.log('发送通知')
+  ElMessage.info('通知功能正在开发中')
 }
 
 onMounted(() => {
