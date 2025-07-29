@@ -31,9 +31,26 @@ The International School Business Intelligence Portal is a comprehensive intelli
 
 ## ✨ Features
 
+### 🤖 AI-Powered Admission Engine
+- **Intelligent Admission Engine**: Advanced AI-driven admission consultation system
+- **Student Profile Analysis**: Automatic recognition of student names, grades, interests, and target universities
+- **Conversational Interface**: Modern chat-based interaction with real-time responses
+- **Personalized Academic Planning**: Generate customized academic plans with university recommendations
+- **Multi-AI Provider Support**: Integration with OpenAI, Baidu Wenxin, Alibaba Tongyi, and mock services
+- **Intelligent Fallback**: Seamless service switching to ensure system reliability
+
+### 👥 Teacher Collaboration & Meeting Management
+- **Meeting Management System**: Complete meeting lifecycle management with creation, editing, and status tracking
+- **Teacher Collaboration Hub**: Enhanced collaboration platform for multi-teacher coordination
+- **Meeting Components**: Comprehensive meeting list, details, and management interfaces
+- **Teacher Invitation System**: Streamlined teacher invitation and participation management
+- **Real-time Notifications**: Integrated notification system for meeting reminders and updates
+- **Collaborative Workflows**: Optimized teacher-to-teacher collaboration processes
+
 ### 🎓 Admission Consultation System
-- **Intelligent Questionnaire Process**: Multi-step forms to collect student information and educational needs
-- **Personalized Report Generation**: Automatically generate academic planning recommendations based on questionnaire responses
+- **Traditional Questionnaire**: Multi-step forms to collect student information and educational needs
+- **AI-Enhanced Consultation**: Next-generation conversational admission guidance
+- **Personalized Report Generation**: Automatically generate academic planning recommendations
 - **Course Recommendations**: Suggest suitable courses based on student interests and goals
 - **Timeline Planning**: Create detailed learning schedules and milestones
 
@@ -104,16 +121,34 @@ For a quick look, you can directly open the `index.html` file in your browser.
 
 ## 🛠 Tech Stack
 
-### Frontend Technologies
+### Modern Vue 3 Application
 | Technology | Version | Description |
 |------------|---------|-------------|
 | **Vue 3** | 3.4+ | Progressive JavaScript framework with Composition API |
-| **TypeScript** | 5.x | Type-safe JavaScript development |
+| **TypeScript** | 5.x | Type-safe JavaScript development with comprehensive type coverage |
 | **Vite** | 5.x | Fast build tool and development server |
 | **Element Plus** | 2.x | Vue 3 UI component library |
-| **ECharts** | 5.x | Complex visualization, 3D charts, relationship graphs |
 | **Pinia** | 2.x | Vue state management library |
 | **Vue Router** | 4.x | Official router for Vue.js |
+| **SCSS** | - | Advanced CSS preprocessing with variables and mixins |
+
+### Backend & Services
+| Technology | Version | Description |
+|------------|---------|-------------|
+| **Node.js** | 18+ | JavaScript runtime for server-side development |
+| **Express** | 4.18+ | Web application framework for Node.js |
+| **TypeScript** | 5.x | Server-side type safety and development experience |
+| **JWT** | - | JSON Web Token for authentication |
+| **WebSocket** | - | Real-time communication for collaboration features |
+
+### AI & Visualization
+| Technology | Version | Description |
+|------------|---------|-------------|
+| **OpenAI API** | - | Advanced AI language model integration |
+| **Baidu Wenxin** | - | Chinese AI service integration |
+| **Alibaba Tongyi** | - | Alternative AI service provider |
+| **ECharts** | 5.x | Complex visualization, 3D charts, relationship graphs |
+| **Chart.js** | 3.x | 2D chart library for data visualization |
 
 ### Legacy Version (v1.x)
 | Technology | Version | Description |
@@ -121,14 +156,13 @@ For a quick look, you can directly open the `index.html` file in your browser.
 | **HTML5** | - | Semantic tags, modern web standards |
 | **CSS3** | - | Flexbox/Grid layout, animations |
 | **JavaScript** | ES6+ | Modular development, modern syntax |
-| **Chart.js** | 3.x | 2D chart library, radar charts, line charts |
-| **ECharts** | 5.x | Complex visualization, 3D charts, relationship graphs |
 | **Font Awesome** | 6.x | Vector icon library |
 
 ### Development Tools
 - **VS Code**: Primary development environment
 - **Chrome DevTools**: Debugging and performance analysis
 - **Git**: Version control
+- **npm**: Package management with Taobao mirror
 
 ---
 
@@ -136,64 +170,81 @@ For a quick look, you can directly open the `index.html` file in your browser.
 
 ```
 school-bi-portal/
-├── 📄 index.html                    # Main page entry
-├── 📁 styles/
-│   └── 🎨 main.css                  # Main stylesheet
-├── 📁 scripts/
-│   ├── ⚙️ main.js                   # Main application logic
-│   ├── 🌐 i18n.js                   # Internationalization system
-│   ├── 📊 data.js                   # Data management
-│   ├── 🎓 admission.js              # Admission consultation module
-│   ├── 💬 communication.js          # School-home communication module
-│   ├── 📈 academic.js               # Academic feedback module
-│   └── 🎯 guidance.js               # College guidance module
-├── 📁 assets/
-│   ├── 🖼️ images/                   # Image resources
-│   └── 🔤 fonts/                    # Font files
-├── 📁 docs/
-│   ├── 📋 PROJECT_ROADMAP.md        # Project roadmap
-│   ├── 📚 TECHNICAL_DOCUMENTATION.md # Technical documentation
-│   ├── 📖 README.md                 # Project description (Chinese)
-│   └── 📖 README_EN.md              # Project description (English)
+├── � hd-schools-vue/              # Vue 3 Application
+│   ├── 📁 src/
+│   │   ├── 📁 components/           # Reusable Vue components
+│   │   │   └── 📁 ai/               # AI-related components
+│   │   ├── 📁 views/                # Page-level components
+│   │   │   ├── � AdmissionAI.vue   # AI-powered admission interface
+│   │   │   └── 📁 TeacherDashboard/ # Teacher collaboration system
+│   │   │       ├── 🏠 index.vue     # Main dashboard
+│   │   │       └── 📁 components/   # Dashboard components
+│   │   │           ├── � MeetingManagement.vue
+│   │   │           ├── 📋 MeetingList.vue
+│   │   │           ├── 📝 MeetingDetails.vue
+│   │   │           ├── 👥 TeacherInvitation.vue
+│   │   │           └── 🤝 CollaborationHub.vue
+│   │   ├── 📁 services/             # Business logic services
+│   │   │   └── 📁 ai/               # AI service integrations
+│   │   │       ├── 🧠 intelligent-admission-engine.ts
+│   │   │       ├── 🔧 ai-service-base.ts
+│   │   │       ├── 🤖 openai-service.ts
+│   │   │       ├── � wenxin-service.ts
+│   │   │       └── 🌟 tongyi-service.ts
+│   │   ├── 📁 stores/               # Pinia state management
+│   │   ├── 📁 types/                # TypeScript type definitions
+│   │   └── � composables/          # Vue 3 composition functions
+│   ├── � server/                   # Backend Node.js server
+│   │   ├── 📁 src/
+│   │   │   ├── 📁 middleware/       # Express middleware
+│   │   │   ├── 📁 models/           # Data models
+│   │   │   ├── � routes/           # API routes
+│   │   │   └── 📁 services/         # Business services
+│   │   ├── � start-dev.js          # Development server
+│   │   └── 🎭 start-mock.js         # Mock server
+├── 📁 docs/                         # Documentation
+├── 📋 PROJECT_DEVELOPMENT_PLAN_v3.2.md # Latest development plan
+├── � AI_INTEGRATION_SUMMARY.md     # AI integration documentation
+├── 📖 README.md                     # Project description (Chinese)
+├── 📖 README_EN.md                  # Project description (English)
 └── 📄 LICENSE                       # License file
 ```
 
 ### Core Module Description
 
-#### 🏗️ Main Application (main.js)
-- Application initialization and routing management
-- Page navigation and state management
-- Notification system and utility functions
+#### 🧠 AI Services Layer
+- **Intelligent Admission Engine**: Core AI-powered admission consultation system
+- **Multi-Provider Integration**: Support for OpenAI, Baidu Wenxin, Alibaba Tongyi, and mock services
+- **Student Profile Analyzer**: Automatic extraction and analysis of student information
+- **Conversation Management**: Complete chat session lifecycle and state management
+- **Fallback Mechanisms**: Intelligent service switching and error recovery
 
-#### 🌐 Internationalization System (i18n.js)
-- Chinese and English translation management
-- Dynamic language switching
-- Localized storage
+#### 👥 Teacher Collaboration System
+- **Meeting Management**: Complete meeting lifecycle with creation, editing, and tracking
+- **Collaboration Hub**: Central platform for teacher-to-teacher coordination
+- **Invitation System**: Streamlined teacher invitation and participation management
+- **Real-time Features**: Live notifications and status updates
+- **Dashboard Integration**: Seamless integration with teacher workflow
 
-#### 📊 Data Management (data.js)
-- Mock data definition
-- Data structure design
-- Data operation interfaces
+#### �️ Frontend Architecture
+- **Vue 3 Composition API**: Modern reactive framework with TypeScript support
+- **Component System**: Reusable UI components with consistent design patterns
+- **State Management**: Pinia-based centralized state with persistent storage
+- **Routing System**: Vue Router 4 with lazy loading and navigation guards
+- **Internationalization**: Complete i18n system with dynamic language switching
 
-#### 🎓 Admission Consultation (admission.js)
-- Intelligent questionnaire system
-- Report generation logic
-- User interaction handling
+#### � Backend Services
+- **Authentication Middleware**: JWT-based user authentication and authorization
+- **User Management**: Comprehensive user and student model management
+- **API Routes**: RESTful API design with TypeScript type safety
+- **Development Tools**: Hot-reload development server and mock data support
+- **Database Integration**: Flexible data persistence with model relationships
 
-#### 💬 School-Home Communication (communication.js)
-- Interaction record management
-- Timeline rendering
-- Sharing and export functions
-
-#### 📈 Academic Feedback (academic.js)
-- Chart visualization
-- AI report generation
-- Data analysis algorithms
-
-#### 🎯 College Guidance (guidance.js)
-- 3D pathway chart rendering
-- Milestone management
-- Goal adjustment algorithms
+#### 🌐 Legacy Module Support (v1.x compatibility)
+- **Data Management**: Mock data definition and operation interfaces
+- **Chart Visualization**: Advanced data visualization with multiple chart types
+- **Export Functions**: Report generation and data export capabilities
+- **Timeline Features**: Interactive timeline rendering and management
 
 ---
 
@@ -603,37 +654,62 @@ All Pull Requests require code review:
 
 ## 📋 Changelog
 
-### v1.0.0 (2025-01-11)
+### v2.1.1 (2025-07-29) - Latest
 - ✨ **New Features**
+  - Teacher Collaboration & Meeting Management System
+  - Complete meeting lifecycle management (create, edit, delete, track)
+  - Teacher invitation and participation management
+  - Enhanced collaboration hub with real-time features
+  - Optimized teacher dashboard with collaborative workflows
+
+- 🔧 **Backend Improvements**
+  - Enhanced authentication middleware with JWT support
+  - Optimized user and student models
+  - Updated API routes and TypeScript definitions
+  - Added development and mock server scripts
+  - Improved error handling and validation
+
+- 🎨 **UI/UX Enhancements**
+  - Modern meeting management interface
+  - Responsive design improvements for mobile devices
+  - Enhanced state management and data persistence
+  - Improved component reusability and modularity
+
+### v2.1.0 (2025-01-19)
+- ✨ **New Features**
+  - AI-Powered Admission Engine with multi-provider support
+  - Intelligent student profile analysis and conversation management
+  - Advanced chat interface with real-time AI responses
+  - Personalized academic planning generation
+  - Complete Vue 3 + TypeScript migration
+
+- � **Technical Improvements**
+  - Modern frontend architecture with Vite and Pinia
+  - Comprehensive TypeScript type coverage (98%+)
+  - Component-based development with Element Plus
+  - Enhanced internationalization system
+
+### v1.0.0 (2025-01-11)
+- ✨ **Foundation Features**
   - Complete admission consultation system
   - School-home communication platform
   - Academic feedback analysis
   - College guidance system
   - Complete internationalization support
 
-- 🐛 **Fixes**
-  - Fix language switching issues
-  - Fix chart rendering issues
-  - Fix responsive layout issues
-
-- 📚 **Documentation**
-  - Add complete project documentation
-  - Add technical documentation
-  - Add deployment guide
-
 ### Planned Updates
 
-#### v1.1.0 (Planned)
-- 🔄 Backend API integration
-- 🔄 User authentication system
-- 🔄 Data persistence
-- 🔄 Mobile optimization
+#### v2.2.0 (Planned)
+- 🔄 Video conferencing integration
+- 🔄 Advanced real-time collaboration features
+- 🔄 Mobile-optimized meeting management
+- 🔄 Enhanced AI service integrations
 
-#### v1.2.0 (Planned)
-- 🔄 AI functionality enhancement
-- 🔄 Real-time data updates
-- 🔄 Advanced visualization
-- 🔄 PWA support
+#### v2.3.0 (Planned)
+- 🔄 Document collaboration and editing
+- 🔄 Task assignment and tracking
+- 🔄 Project management integration
+- 🔄 Advanced analytics and reporting
 
 ---
 
