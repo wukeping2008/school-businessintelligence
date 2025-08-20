@@ -17,8 +17,11 @@
       
       <div class="guidance-grid">
         <div class="pathway-visualization">
-          <h3>{{ t('guidance.pathwayChart') }}</h3>
-          <div ref="pathwayChartRef" style="height: 500px;"></div>
+          <RealMountainPathwayView 
+            :student-data="currentStudentData" 
+            :selected-student="selectedStudent"
+            :show-parent-view="false"
+          />
         </div>
         
         <div class="progress-dashboard">
@@ -77,6 +80,7 @@
 import { ref, reactive, computed, onMounted, nextTick, watch } from 'vue'
 import { useI18nStore } from '../stores/i18n'
 import * as echarts from 'echarts'
+import RealMountainPathwayView from '../components/RealMountainPathwayView.vue'
 
 const i18nStore = useI18nStore()
 
@@ -444,13 +448,13 @@ const currentStudentData = computed(() => {
 const getStatusIcon = (status: string): string => {
   switch (status) {
     case 'completed':
-      return 'fas fa-check'
+      return 'fas fa-check-circle'
     case 'in-progress':
-      return 'fas fa-clock'
+      return 'fas fa-play-circle'
     case 'pending':
-      return 'fas fa-circle'
+      return 'far fa-circle'
     default:
-      return 'fas fa-circle'
+      return 'far fa-circle'
   }
 }
 
@@ -576,35 +580,44 @@ onMounted(() => {
 
 .guidance-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 30px;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 25px;
 }
 
 .pathway-visualization {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
-  padding: 30px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  grid-row: span 2;
+  grid-row: 1 / 3;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.info-panels {
+  grid-column: 2;
+  display: grid;
+  grid-template-rows: auto auto auto;
+  gap: 20px;
 }
 
 .progress-dashboard,
 .milestone-tracker,
 .resource-recommendations {
   background: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
-  padding: 25px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
 .pathway-visualization h3,
 .progress-dashboard h3,
 .milestone-tracker h3,
 .resource-recommendations h3 {
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   color: #333;
-  font-size: 18px;
+  font-size: 16px;
   text-align: center;
+  font-weight: 600;
 }
 
 .progress-item {
@@ -716,19 +729,29 @@ onMounted(() => {
   display: inline-block;
 }
 
+@media (max-width: 1024px) {
+  .guidance-grid {
+    grid-template-columns: 0.9fr 1fr;
+    gap: 20px;
+  }
+}
+
 @media (max-width: 768px) {
   .guidance-grid {
     grid-template-columns: 1fr;
+    gap: 20px;
   }
   
   .pathway-visualization {
     grid-row: auto;
+    grid-column: 1;
   }
   
   .milestone-item {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
+    padding: 12px 0;
   }
   
   .milestone-status {
