@@ -3,7 +3,7 @@
  * 集成阿里云通义千问API
  */
 
-import { AIServiceBase, AIServiceConfig, AIResponse, ChatMessage } from './ai-service-base'
+import { AIServiceBase, type AIServiceConfig, type AIResponse, type ChatMessage } from './ai-service-base'
 
 export class TongyiService extends AIServiceBase {
   constructor(config: AIServiceConfig) {

@@ -580,9 +580,8 @@ onMounted(() => {
 
 .guidance-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto auto;
-  gap: 25px;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
 }
 
 .pathway-visualization {
@@ -591,6 +590,7 @@ onMounted(() => {
   background: transparent;
   border-radius: 0;
   box-shadow: none;
+  min-height: 600px;
 }
 
 .info-panels {
@@ -603,29 +603,38 @@ onMounted(() => {
 .progress-dashboard,
 .milestone-tracker,
 .resource-recommendations {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .pathway-visualization h3,
 .progress-dashboard h3,
 .milestone-tracker h3,
 .resource-recommendations h3 {
-  margin-bottom: 15px;
-  color: #333;
-  font-size: 16px;
-  text-align: center;
+  margin-bottom: 16px;
+  color: #2c3e50;
+  font-size: 15px;
+  text-align: left;
   font-weight: 600;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f0f0f0;
 }
 
 .progress-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 0;
-  border-bottom: 1px solid #f0f0f0;
+  padding: 12px 0;
+  border-bottom: 1px solid #f5f5f5;
+  transition: all 0.3s ease;
+}
+
+.progress-item:hover {
+  padding-left: 8px;
+  background: linear-gradient(to right, rgba(102, 126, 234, 0.05), transparent);
 }
 
 .progress-item:last-child {
@@ -633,22 +642,32 @@ onMounted(() => {
 }
 
 .progress-label {
-  font-weight: 600;
-  color: #333;
+  font-weight: 500;
+  color: #4a5568;
+  font-size: 14px;
 }
 
 .progress-value {
   color: #667eea;
-  font-weight: bold;
-  font-size: 16px;
+  font-weight: 600;
+  font-size: 15px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .milestone-item {
   display: flex;
   align-items: center;
-  gap: 15px;
-  padding: 15px 0;
-  border-bottom: 1px solid #f0f0f0;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #f5f5f5;
+  transition: all 0.3s ease;
+}
+
+.milestone-item:hover {
+  padding-left: 8px;
+  background: linear-gradient(to right, rgba(102, 126, 234, 0.05), transparent);
 }
 
 .milestone-item:last-child {
@@ -656,15 +675,16 @@ onMounted(() => {
 }
 
 .milestone-status {
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: 12px;
   color: white;
   flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .milestone-status.completed {
@@ -684,22 +704,29 @@ onMounted(() => {
 }
 
 .milestone-title {
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 5px;
-}
-
-.milestone-date {
-  color: #666;
+  font-weight: 500;
+  color: #2c3e50;
+  margin-bottom: 3px;
   font-size: 14px;
 }
 
+.milestone-date {
+  color: #718096;
+  font-size: 12px;
+}
+
 .resource-item {
-  padding: 15px;
-  background: #f8f9fa;
-  border-radius: 10px;
-  margin-bottom: 15px;
+  padding: 14px;
+  background: linear-gradient(to right, #f8f9fa, #ffffff);
+  border-radius: 8px;
+  margin-bottom: 12px;
   border-left: 3px solid #667eea;
+  transition: all 0.3s ease;
+}
+
+.resource-item:hover {
+  transform: translateX(4px);
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
 }
 
 .resource-item:last-child {
@@ -707,32 +734,39 @@ onMounted(() => {
 }
 
 .resource-title {
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 8px;
-  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 6px;
+  font-size: 14px;
 }
 
 .resource-description {
-  color: #666;
-  font-size: 14px;
+  color: #718096;
+  font-size: 13px;
   line-height: 1.5;
   margin-bottom: 8px;
 }
 
 .resource-type {
   color: #667eea;
-  font-size: 12px;
+  font-size: 11px;
   background: rgba(102, 126, 234, 0.1);
-  padding: 4px 8px;
-  border-radius: 12px;
+  padding: 3px 8px;
+  border-radius: 10px;
   display: inline-block;
+  font-weight: 500;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1200px) {
   .guidance-grid {
-    grid-template-columns: 0.9fr 1fr;
+    grid-template-columns: 1.5fr 1fr;
     gap: 20px;
+  }
+  
+  .progress-dashboard h3,
+  .milestone-tracker h3,
+  .resource-recommendations h3 {
+    font-size: 14px;
   }
 }
 

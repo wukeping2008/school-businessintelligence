@@ -3,7 +3,7 @@
  * 集成OpenAI GPT API
  */
 
-import { AIServiceBase, AIServiceConfig, AIResponse, ChatMessage } from './ai-service-base'
+import { AIServiceBase, type AIServiceConfig, type AIResponse, type ChatMessage } from './ai-service-base'
 
 export class OpenAIService extends AIServiceBase {
   private readonly baseURL: string

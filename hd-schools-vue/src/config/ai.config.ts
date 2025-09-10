@@ -18,7 +18,7 @@ export const AI_PROVIDERS = {
   // 阿里千问配置
   qwen: {
     provider: 'qwen' as const,
-    apiKey: process.env.VITE_QWEN_API_KEY || '',
+    apiKey: import.meta.env.VITE_QWEN_API_KEY || '',
     apiUrl: 'https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation',
     model: 'qwen-turbo', // 可选: qwen-turbo, qwen-plus, qwen-max
     maxTokens: 2000,
@@ -29,7 +29,7 @@ export const AI_PROVIDERS = {
   // Kimi配置
   kimi: {
     provider: 'kimi' as const,
-    apiKey: process.env.VITE_KIMI_API_KEY || '',
+    apiKey: import.meta.env.VITE_KIMI_API_KEY || '',
     apiUrl: 'https://api.moonshot.cn/v1/chat/completions',
     model: 'moonshot-v1-8k', // 可选: moonshot-v1-8k, moonshot-v1-32k, moonshot-v1-128k
     maxTokens: 2000,
@@ -40,7 +40,7 @@ export const AI_PROVIDERS = {
   // OpenAI配置（备用）
   openai: {
     provider: 'openai' as const,
-    apiKey: process.env.VITE_OPENAI_API_KEY || '',
+    apiKey: import.meta.env.VITE_OPENAI_API_KEY || '',
     apiUrl: 'https://api.openai.com/v1/chat/completions',
     model: 'gpt-3.5-turbo',
     maxTokens: 2000,
@@ -54,7 +54,7 @@ export const DEFAULT_AI_PROVIDER = 'qwen'
 
 // 获取当前AI配置
 export function getAIConfig(): AIConfig {
-  const provider = (process.env.VITE_AI_PROVIDER || DEFAULT_AI_PROVIDER) as keyof typeof AI_PROVIDERS
+  const provider = (import.meta.env.VITE_AI_PROVIDER || DEFAULT_AI_PROVIDER) as keyof typeof AI_PROVIDERS
   return AI_PROVIDERS[provider] || AI_PROVIDERS[DEFAULT_AI_PROVIDER]
 }
 

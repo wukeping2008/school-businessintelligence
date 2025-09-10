@@ -3,7 +3,7 @@
  * 用于开发和测试阶段，模拟真实AI服务的响应
  */
 
-import { AIServiceBase, AIServiceConfig, AIResponse, ChatMessage } from './ai-service-base'
+import { AIServiceBase, type AIServiceConfig, type AIResponse, type ChatMessage } from './ai-service-base'
 
 export class MockAIService extends AIServiceBase {
   constructor(config: AIServiceConfig) {

@@ -3,7 +3,7 @@
  * 集成百度文心一言API
  */
 
-import { AIServiceBase, AIServiceConfig, AIResponse, ChatMessage } from './ai-service-base'
+import { AIServiceBase, type AIServiceConfig, type AIResponse, type ChatMessage } from './ai-service-base'
 
 export class WenxinService extends AIServiceBase {
   constructor(config: AIServiceConfig) {

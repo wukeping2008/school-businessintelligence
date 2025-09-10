@@ -3,7 +3,7 @@
  * 支持阿里千问、Kimi等多种AI提供商
  */
 
-import axios, { AxiosInstance } from 'axios'
+import axios, { type AxiosInstance } from 'axios'
 import { getAIConfig, type AIConfig } from '@/config/ai.config'
 import type { AIResponse, ChatMessage } from '@/types/ai/admission'
 

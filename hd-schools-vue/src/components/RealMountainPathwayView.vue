@@ -102,10 +102,22 @@ d<template>
               v-for="(milestone, index) in pathwayMilestones" 
               :key="index"
               class="milestone" 
-              :class="milestone.status"
+              :class="[milestone.status, `level-${index + 1}`]"
               :style="getPositionStyle(index + 1)"
               @click="showMilestoneDetails(milestone)"
             >
+              <!-- 连接线 (只在非第一个节点显示) -->
+              <svg v-if="index > 0" class="milestone-path" :style="getPathStyle(index)">
+                <path 
+                  :d="getPathData(index)"
+                  stroke="rgba(255, 255, 255, 0.3)" 
+                  stroke-width="2" 
+                  fill="none" 
+                  stroke-dasharray="5,5"
+                  class="animated-path"
+                />
+              </svg>
+              
               <div class="milestone-icon">
                 <i :class="milestone.icon"></i>
               </div>
@@ -418,22 +430,74 @@ const selectTargetSchool = (school: any) => {
 }
 
 const getPositionStyle = (index: number) => {
+  // 阶梯式路径布局 - 匹配实际的里程碑数量
+  // 起点(index=0) + 4个里程碑(index=1-4) + 峰顶(index=-1)
   const positions = [
-    { bottom: '5%', left: '5%' }, // 起点
-    { bottom: '20%', left: '20%' }, // 里程碑1
-    { bottom: '35%', left: '35%' }, // 里程碑2
-    { bottom: '50%', left: '50%' }, // 里程碑3
-    { bottom: '65%', left: '65%' }, // 里程碑4
-    { bottom: '80%', left: '75%' }  // 峰顶
+    { bottom: '15%', left: '20%' },  // 起点 - 山脚营地 (index=0)
+    { bottom: '30%', left: '35%' },  // 里程碑1 - 学术强化期 (index=1)
+    { bottom: '45%', left: '25%' },  // 里程碑2 - 语言冲刺期 (index=2)
+    { bottom: '60%', left: '40%' },  // 里程碑3 - 申请准备期 (index=3)
+    { bottom: '75%', left: '30%' },  // 里程碑4 - 面试冲刺期 (index=4)
+    { bottom: '88%', left: '45%' }   // 峰顶 - 目标达成 (index=-1/5)
   ]
   
-  if (index === -1) return positions[positions.length - 1]
-  return positions[index] || positions[0]
+  // 根据学生特点添加微小偏移，保持个性化
+  const studentOffsets = {
+    '张小明': { x: 0, y: 0 },      // 标准路径
+    '李小红': { x: 5, y: 0 },      // 稍向右偏
+    '王小华': { x: -5, y: 0 }      // 稍向左偏
+  }
+  
+  const offset = studentOffsets[props.selectedStudent] || { x: 0, y: 0 }
+  
+  // 处理特殊索引
+  if (index === -1) {
+    // 峰顶位置
+    const summit = positions[positions.length - 1]
+    return {
+      bottom: summit.bottom,
+      left: `calc(${summit.left} + ${offset.x}%)`
+    }
+  }
+  
+  // 正常索引位置
+  const pos = positions[index] || positions[0]
+  return {
+    bottom: pos.bottom,
+    left: `calc(${pos.left} + ${offset.x}%)`
+  }
 }
 
 const showMilestoneDetails = (milestone: any) => {
   // 显示里程碑详情模态框
   console.log('Showing details for milestone:', milestone.title)
+}
+
+// 获取连接线的样式
+const getPathStyle = (index: number) => {
+  return {
+    position: 'absolute',
+    width: '200px',
+    height: '200px',
+    pointerEvents: 'none',
+    zIndex: 5,
+    bottom: '0',
+    left: '0'
+  }
+}
+
+// 生成SVG路径数据
+const getPathData = (index: number) => {
+  // 根据索引返回不同的路径数据
+  // 这里使用简单的曲线连接
+  const paths = [
+    'M 0,0 Q 50,20 100,0',      // 平缓上升
+    'M 0,0 Q 30,30 100,0',      // 稍微弯曲
+    'M 0,0 Q 60,25 100,0',      // 中等弧度
+    'M 0,0 Q 40,35 100,0',      // 较大弧度
+    'M 0,0 Q 50,30 100,0'       // 最后冲刺
+  ]
+  return paths[index - 1] || paths[0]
 }
 
 const generateShareImage = () => {
@@ -842,10 +906,49 @@ onMounted(() => {
   pointer-events: auto;
   cursor: pointer;
   transition: all 0.3s ease;
+  z-index: 20;
+  animation: fadeInUp 0.6s ease-out forwards;
 }
 
 .milestone:hover {
-  transform: scale(1.1);
+  transform: scale(1.1) translateY(-3px);
+  z-index: 25;
+}
+
+/* 阶梯式层级样式 */
+.milestone.level-1 { animation-delay: 0.1s; }
+.milestone.level-2 { animation-delay: 0.2s; }
+.milestone.level-3 { animation-delay: 0.3s; }
+.milestone.level-4 { animation-delay: 0.4s; }
+.milestone.level-5 { animation-delay: 0.5s; }
+
+/* 节点进入动画 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* SVG路径样式 */
+.milestone-path {
+  position: absolute;
+  overflow: visible;
+}
+
+.animated-path {
+  stroke-dashoffset: 100;
+  animation: drawPath 1s ease-out forwards;
+}
+
+@keyframes drawPath {
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
 .milestone-icon {
@@ -863,15 +966,23 @@ onMounted(() => {
 
 .milestone.base-camp .milestone-icon {
   background: linear-gradient(135deg, #667eea, #764ba2);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.milestone.completed .milestone-icon {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
 }
 
 .milestone.in-progress .milestone-icon {
   background: linear-gradient(135deg, #FFD700, #FFA500);
   animation: pulse-glow 2s infinite;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.5);
 }
 
 .milestone.pending .milestone-icon {
   background: linear-gradient(135deg, #95A5A6, #BDC3C7);
+  opacity: 0.8;
 }
 
 .milestone.summit .milestone-icon,

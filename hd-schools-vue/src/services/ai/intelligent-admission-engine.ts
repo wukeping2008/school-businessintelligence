@@ -4,6 +4,8 @@
  */
 
 import { AIServiceFactory, AIServiceBase, type ChatMessage } from './ai-service-base'
+import { ConversationManager } from './conversation-manager'
+import { PersonalizedPlanner } from './personalized-planner'
 
 export interface StudentProfile {
   name?: string
@@ -15,6 +17,23 @@ export interface StudentProfile {
   extracurriculars?: string[]
   careerGoals?: string[]
   concerns?: string[]
+  // 新增字段支持更详细的学生画像
+  learningStyle?: 'visual' | 'auditory' | 'kinesthetic' | 'reading'
+  motivation?: 'intrinsic' | 'extrinsic' | 'mixed'
+  socialPreference?: 'group' | 'individual' | 'balanced'
+  subjectPreferences?: Record<string, number> // 科目偏好 0-10分
+  languageAbilities?: {
+    english?: 'native' | 'fluent' | 'intermediate' | 'basic'
+    chinese?: 'native' | 'fluent' | 'intermediate' | 'basic'
+    others?: string[]
+  }
+  testScores?: {
+    igcse?: Record<string, string>
+    alevel?: Record<string, string>
+    ielts?: number
+    toefl?: number
+    sat?: number
+  }
 }
 
 export interface ConsultationSession {
@@ -26,6 +45,19 @@ export interface ConsultationSession {
   generatedPlan?: AcademicPlan
   createdAt: Date
   updatedAt: Date
+  // 新增对话上下文管理
+  conversationContext: {
+    topicsDiscussed: string[]
+    pendingQuestions: string[]
+    keyInsights: string[]
+    emotionalTone: 'positive' | 'neutral' | 'concerned'
+  }
+  // 智能推荐
+  recommendations: {
+    nextQuestions: string[]
+    suggestedTopics: string[]
+    resourceLinks: string[]
+  }
 }
 
 export interface AcademicPlan {
@@ -94,7 +126,7 @@ class StudentProfileAnalyzer {
   ]
 
   /**
-   * 分析用户输入并提取学生信息
+   * 分析用户输入并提取学生信息（增强版）
    */
   analyzeInput(input: string): {
     interests: string[]
@@ -102,6 +134,9 @@ class StudentProfileAnalyzer {
     grade?: string
     strengths: string[]
     concerns: string[]
+    learningStyle?: string
+    testScores?: Record<string, any>
+    extracurriculars?: string[]
   } {
     const lowerInput = input.toLowerCase()
     const result = {
@@ -109,7 +144,10 @@ class StudentProfileAnalyzer {
       universities: [] as string[],
       grade: undefined as string | undefined,
       strengths: [] as string[],
-      concerns: [] as string[]
+      concerns: [] as string[],
+      learningStyle: undefined as string | undefined,
+      testScores: {} as Record<string, any>,
+      extracurriculars: [] as string[]
     }
 
     // 分析兴趣领域
@@ -142,6 +180,51 @@ class StudentProfileAnalyzer {
     }
     if (lowerInput.includes('担心') || lowerInput.includes('困难') || lowerInput.includes('问题')) {
       result.concerns.push('需要额外支持')
+    }
+
+    // 分析学习风格
+    if (lowerInput.includes('视觉') || lowerInput.includes('看') || lowerInput.includes('图表')) {
+      result.learningStyle = 'visual'
+    } else if (lowerInput.includes('听') || lowerInput.includes('讲解') || lowerInput.includes('音频')) {
+      result.learningStyle = 'auditory'
+    } else if (lowerInput.includes('动手') || lowerInput.includes('实践') || lowerInput.includes('实验')) {
+      result.learningStyle = 'kinesthetic'
+    } else if (lowerInput.includes('阅读') || lowerInput.includes('书')) {
+      result.learningStyle = 'reading'
+    }
+
+    // 分析考试成绩
+    const ieltsMatch = input.match(/ielts[:\s]*(\d+\.?\d*)/i)
+    if (ieltsMatch) {
+      result.testScores.ielts = parseFloat(ieltsMatch[1])
+    }
+    
+    const toeflMatch = input.match(/toefl[:\s]*(\d+)/i)
+    if (toeflMatch) {
+      result.testScores.toefl = parseInt(toeflMatch[1])
+    }
+
+    const satMatch = input.match(/sat[:\s]*(\d+)/i)
+    if (satMatch) {
+      result.testScores.sat = parseInt(satMatch[1])
+    }
+
+    // 分析课外活动
+    const activities = [
+      { keyword: '辩论', activity: '辩论社' },
+      { keyword: '音乐', activity: '音乐社团' },
+      { keyword: '运动', activity: '体育活动' },
+      { keyword: '编程', activity: '编程俱乐部' },
+      { keyword: '志愿', activity: '志愿者活动' },
+      { keyword: '学生会', activity: '学生会' },
+      { keyword: '模联', activity: '模拟联合国' },
+      { keyword: '科研', activity: '科研项目' }
+    ]
+
+    for (const { keyword, activity } of activities) {
+      if (lowerInput.includes(keyword) && !result.extracurriculars.includes(activity)) {
+        result.extracurriculars.push(activity)
+      }
     }
 
     return result
@@ -211,10 +294,14 @@ export class IntelligentAdmissionEngine {
   private sessions: Map<string, ConsultationSession> = new Map()
   private conversationContext: Map<string, ChatMessage[]> = new Map()
   private profileAnalyzer: StudentProfileAnalyzer
+  private conversationManager: ConversationManager
+  private personalizedPlanner: PersonalizedPlanner
 
   constructor() {
     this.initializeAI()
     this.profileAnalyzer = new StudentProfileAnalyzer()
+    this.conversationManager = new ConversationManager()
+    this.personalizedPlanner = new PersonalizedPlanner()
   }
 
   private async initializeAI(): Promise<void> {
@@ -243,7 +330,33 @@ export class IntelligentAdmissionEngine {
       currentStage: 'greeting',
       completionPercentage: 0,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
+      // 初始化对话上下文
+      conversationContext: {
+        topicsDiscussed: [],
+        pendingQuestions: [
+          '您目前在读几年级？',
+          '您对哪些专业领域感兴趣？',
+          '您有目标大学吗？',
+          '您的学术成绩如何？'
+        ],
+        keyInsights: [],
+        emotionalTone: 'neutral'
+      },
+      // 初始化智能推荐
+      recommendations: {
+        nextQuestions: [
+          '您最喜欢的科目是什么？',
+          '您参加过哪些课外活动？',
+          '您的职业理想是什么？'
+        ],
+        suggestedTopics: [
+          '大学申请时间线',
+          '标准化考试准备',
+          '课外活动规划'
+        ],
+        resourceLinks: []
+      }
     }
 
     // 添加系统欢迎消息
@@ -281,27 +394,37 @@ export class IntelligentAdmissionEngine {
     // 分析用户输入并更新学生档案
     await this.analyzeAndUpdateProfile(session, userInput)
 
-    // 生成AI回复
-    const aiResponse = await this.generateAIResponse(session)
+    // 使用对话管理器生成智能回复
+    const smartResponse = this.conversationManager.generateSmartResponse(session, userInput)
+    
+    // 如果AI服务可用，增强回复
+    let finalResponse = smartResponse.response
+    if (this.aiService) {
+      const aiEnhancedResponse = await this.generateAIResponse(session)
+      finalResponse = this.mergeResponses(smartResponse.response, aiEnhancedResponse)
+    }
     
     // 添加AI回复
     session.messages.push({
       role: 'assistant',
-      content: aiResponse,
+      content: finalResponse,
       timestamp: new Date()
     })
+
+    // 更新推荐问题
+    session.recommendations.nextQuestions = smartResponse.suggestedQuestions
 
     // 更新会话状态
     this.updateSessionStage(session)
     session.updatedAt = new Date()
 
     // 判断是否应该生成学业规划
-    const shouldGeneratePlan = this.shouldGenerateAcademicPlan(session)
+    const shouldGeneratePlan = smartResponse.shouldGeneratePlan || this.shouldGenerateAcademicPlan(session)
 
     this.sessions.set(sessionId, session)
 
     return {
-      response: aiResponse,
+      response: finalResponse,
       session,
       shouldGeneratePlan
     }
@@ -316,33 +439,40 @@ export class IntelligentAdmissionEngine {
       throw new Error('会话不存在')
     }
 
-    if (!this.aiService) {
-      throw new Error('AI服务未初始化')
-    }
-
-    // 构建规划生成提示
-    const planPrompt = this.buildPlanGenerationPrompt(session.studentProfile)
-    
     try {
-      const response = await this.aiService.generate(planPrompt, {
-        studentName: session.studentProfile.name,
-        targetUniversity: session.studentProfile.targetUniversities?.[0],
-        major: session.studentProfile.interests?.[0]
-      })
+      // 使用个性化规划生成器
+      const plan = this.personalizedPlanner.generateCompletePlan(session.studentProfile)
+      
+      // 如果AI服务可用，使用AI增强规划
+      if (this.aiService) {
+        const planPrompt = this.buildPlanGenerationPrompt(session.studentProfile)
+        const response = await this.aiService.generate(planPrompt, {
+          studentName: session.studentProfile.name,
+          targetUniversity: session.studentProfile.targetUniversities?.[0],
+          major: session.studentProfile.interests?.[0]
+        })
 
-      if (response.success) {
-        const plan = this.parseAcademicPlan(response.data.content, session.studentProfile)
-        session.generatedPlan = plan
-        session.completionPercentage = 100
-        this.sessions.set(sessionId, session)
-        return plan
-      } else {
-        throw new Error(response.error || '规划生成失败')
+        if (response.success) {
+          // 合并AI生成的洞察到规划中
+          const aiInsights = this.parseAIInsights(response.data.content)
+          if (aiInsights.recommendations) {
+            plan.recommendations = [...new Set([...plan.recommendations, ...aiInsights.recommendations])]
+          }
+          if (aiInsights.nextSteps) {
+            plan.nextSteps = [...new Set([...plan.nextSteps, ...aiInsights.nextSteps])]
+          }
+        }
       }
+      
+      session.generatedPlan = plan
+      session.completionPercentage = 100
+      this.sessions.set(sessionId, session)
+      return plan
+      
     } catch (error) {
       console.error('生成学业规划失败:', error)
-      // 返回默认规划
-      return this.generateDefaultPlan(session.studentProfile)
+      // 使用基础规划生成器作为后备
+      return this.personalizedPlanner.generateCompletePlan(session.studentProfile)
     }
   }
 
@@ -396,16 +526,20 @@ export class IntelligentAdmissionEngine {
       // 更新兴趣领域
       if (analysisResult.interests.length > 0) {
         profile.interests = [...new Set([...(profile.interests || []), ...analysisResult.interests])]
+        // 更新已讨论话题
+        session.conversationContext.topicsDiscussed.push('兴趣领域')
       }
 
       // 更新目标大学
       if (analysisResult.universities.length > 0) {
         profile.targetUniversities = [...new Set([...(profile.targetUniversities || []), ...analysisResult.universities])]
+        session.conversationContext.topicsDiscussed.push('目标大学')
       }
 
       // 更新年级
       if (analysisResult.grade) {
         profile.grade = analysisResult.grade
+        session.conversationContext.topicsDiscussed.push('年级信息')
       }
 
       // 更新优势
@@ -416,6 +550,25 @@ export class IntelligentAdmissionEngine {
       // 更新担忧
       if (analysisResult.concerns.length > 0) {
         profile.concerns = [...new Set([...(profile.concerns || []), ...analysisResult.concerns])]
+        // 如果有担忧，调整情感基调
+        session.conversationContext.emotionalTone = 'concerned'
+      }
+
+      // 更新学习风格
+      if (analysisResult.learningStyle) {
+        profile.learningStyle = analysisResult.learningStyle as any
+      }
+
+      // 更新考试成绩
+      if (analysisResult.testScores && Object.keys(analysisResult.testScores).length > 0) {
+        profile.testScores = { ...profile.testScores, ...analysisResult.testScores }
+        session.conversationContext.topicsDiscussed.push('考试成绩')
+      }
+
+      // 更新课外活动
+      if (analysisResult.extracurriculars && analysisResult.extracurriculars.length > 0) {
+        profile.extracurriculars = [...new Set([...(profile.extracurriculars || []), ...analysisResult.extracurriculars])]
+        session.conversationContext.topicsDiscussed.push('课外活动')
       }
 
       // 如果有AI服务，也尝试使用AI分析
@@ -546,6 +699,50 @@ export class IntelligentAdmissionEngine {
 7. 具体行动步骤
 
 要求：专业、详细、可操作性强。`
+  }
+
+  private mergeResponses(smartResponse: string, aiResponse: string): string {
+    // 合并两个响应，优先使用AI响应但保留智能响应的结构
+    if (aiResponse.length > smartResponse.length * 2) {
+      // AI响应更详细，使用AI响应
+      return aiResponse
+    } else {
+      // 合并两者
+      return `${smartResponse}\n\n${aiResponse}`
+    }
+  }
+
+  private parseAIInsights(content: string): {
+    recommendations?: string[]
+    nextSteps?: string[]
+  } {
+    const insights: {
+      recommendations?: string[]
+      nextSteps?: string[]
+    } = {}
+    
+    // 简单的解析逻辑，提取建议和下一步
+    const lines = content.split('\n')
+    let currentSection = ''
+    
+    lines.forEach(line => {
+      if (line.includes('建议') || line.includes('recommendation')) {
+        currentSection = 'recommendations'
+        insights.recommendations = []
+      } else if (line.includes('下一步') || line.includes('next step')) {
+        currentSection = 'nextSteps'
+        insights.nextSteps = []
+      } else if (line.trim().startsWith('- ') || line.trim().startsWith('• ')) {
+        const item = line.trim().substring(2)
+        if (currentSection === 'recommendations' && insights.recommendations) {
+          insights.recommendations.push(item)
+        } else if (currentSection === 'nextSteps' && insights.nextSteps) {
+          insights.nextSteps.push(item)
+        }
+      }
+    })
+    
+    return insights
   }
 
   private parseAcademicPlan(content: string, profile: StudentProfile): AcademicPlan {
